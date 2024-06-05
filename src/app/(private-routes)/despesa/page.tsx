@@ -1,3 +1,10 @@
+import { NewTransactionFormBtn } from '@/components/form/NewTransactionFormBtn'
+
 export default function Expense() {
-  return <h1>Despesa</h1>
+  return (
+    <>
+      <NewTransactionFormBtn />
+      <h1>Despesa</h1>
+    </>
+  )
 }

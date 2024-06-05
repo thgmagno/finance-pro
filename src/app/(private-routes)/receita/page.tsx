@@ -1,3 +1,10 @@
+import { NewTransactionFormBtn } from '@/components/form/NewTransactionFormBtn'
+
 export default function Income() {
-  return <h1>Receita</h1>
+  return (
+    <>
+      <NewTransactionFormBtn />
+      <h1>Receita</h1>
+    </>
+  )
 }
