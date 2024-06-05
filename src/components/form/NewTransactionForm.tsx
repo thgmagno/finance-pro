@@ -6,6 +6,7 @@ import { Plus } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useFormState } from 'react-dom'
+import { ButtonFormSubmit } from '../button/FormSubmit'
 
 interface Props {
   TypeTransaction: TypeTransaction
@@ -96,11 +97,7 @@ export function NewTransactionForm({
       )}
 
       {/* Botão Salvar */}
-      <div>
-        <button type="submit" className="submit">
-          Salvar
-        </button>
-      </div>
+      <ButtonFormSubmit title="Salvar" className="submit" />
     </form>
   )
 }

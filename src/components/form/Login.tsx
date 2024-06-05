@@ -1,3 +1,5 @@
+import { ButtonFormSubmit } from '../button/FormSubmit'
+
 export function LoginForm() {
   return (
     <form
@@ -6,9 +8,10 @@ export function LoginForm() {
     >
       <input type="text" placeholder="email@exemplo.com" />
       <input type="password" placeholder="Digite sua senha" />
-      <button className="rounded border bg-slate-400 p-2 text-slate-100 shadow hover:opacity-90">
-        Acessar
-      </button>
+      <ButtonFormSubmit
+        title="Acessar"
+        className="rounded border bg-slate-400 p-2 text-slate-100 shadow hover:opacity-90"
+      />
     </form>
   )
 }

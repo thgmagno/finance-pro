@@ -6,6 +6,7 @@ import { X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useFormState } from 'react-dom'
+import { ButtonFormSubmit } from '../button/FormSubmit'
 
 interface Props {
   TypeTransaction: TypeTransaction
@@ -45,11 +46,7 @@ export function NewCategoryForm({ TypeTransaction }: Props) {
       {formState?.success && <p>Categoria cadastrada com sucesso</p>}
 
       {/* Botão Salvar */}
-      <div>
-        <button type="submit" className="submit">
-          Salvar
-        </button>
-      </div>
+      <ButtonFormSubmit title="Salvar" className="submit" />
     </form>
   )
 }
