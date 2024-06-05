@@ -1,9 +1,15 @@
+import { actions } from '@/actions'
 import { NewTransactionFormBtn } from '@/components/form/NewTransactionFormBtn'
 
-export default function Income() {
+export default async function Income() {
+  const [transactions, categories] = await Promise.all([
+    actions.transaction.findMany(),
+    actions.category.findMany(),
+  ])
+
   return (
     <>
-      <NewTransactionFormBtn />
+      <NewTransactionFormBtn categories={categories} />
       <h1>Receita</h1>
     </>
   )
