@@ -4,6 +4,14 @@
 
 @layer base {
   body {
-    @apply bg-slate-900 min-h-screen flex
+    @apply bg-slate-900
+  }
+
+  form input {
+    @apply p-2 rounded shadow outline-slate-400
+  }
+
+  form button {
+    @apply p-2 border hover:opacity-90 bg-slate-400 rounded shadow text-slate-100
   }
 }
