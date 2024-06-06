@@ -1,5 +1,7 @@
 import { actions } from '@/actions'
 import { NewTransactionFormBtn } from '@/components/form/NewTransactionFormBtn'
+import { GridEmpty } from '@/components/grid/Empty'
+import { GridTransactions } from '@/components/grid/Transactions'
 import { useSession } from '@/hooks/useSession'
 
 export default async function Expense() {
@@ -16,7 +18,11 @@ export default async function Expense() {
     <>
       <NewTransactionFormBtn userId={id} categories={categories} />
       <h1>Despesa</h1>
-      {filtered && <pre>{JSON.stringify(filtered, null, 2)}</pre>}
+      {filtered.length > 0 ? (
+        <GridTransactions data={filtered} />
+      ) : (
+        <GridEmpty />
+      )}
     </>
   )
 }

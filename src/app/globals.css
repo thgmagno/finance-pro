@@ -10,4 +10,21 @@
   .checkbox-wrapper {
     @apply flex items-center mb-2 gap-2 md:gap-0
   }
+
+  table th {
+    @apply min-w-40
+  }
+
+  table td {
+    @apply text-center h-8 md:h-10
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
 }

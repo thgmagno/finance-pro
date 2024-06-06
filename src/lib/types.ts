@@ -6,6 +6,21 @@ export type PayloadType = {
 
 export type TypeTransaction = 'EXPENSE' | 'INCOME'
 
+export type StatusTransaction = 'OVERDUE' | 'PENDING' | 'OK'
+
+export type Transaction = {
+  id: number
+  description: string
+  amount: number
+  month: number
+  year: number
+  status: StatusTransaction
+  type: TypeTransaction
+  categoryId: number
+  userId: number
+  uuid: string | null
+}
+
 export type SelectOptions = {
   value: number
   label: string
