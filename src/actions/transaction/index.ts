@@ -32,6 +32,8 @@ export async function create(
   const uuid = randomUUID()
 
   try {
+    console.log('Parsed data:', parsed.data)
+
     const promises = []
 
     for (let i = 0; i < parsed.data.recurrency; i++) {
@@ -52,9 +54,9 @@ export async function create(
           },
         }),
       )
-
-      await Promise.all(promises)
     }
+
+    await Promise.all(promises)
   } catch (err) {
     if (err instanceof Error) {
       return { errors: { _form: 'Ocorreu um erro ao salvar' } }

@@ -32,6 +32,7 @@ export const TransactionSchema = z.object({
 })
 
 export const CategorySchema = z.object({
+  userId: z.number(),
   type: z.enum(['EXPENSE', 'INCOME']),
   description: z.string().min(1, 'Informe a descrição'),
 })

@@ -13,6 +13,7 @@ export async function create(
   const parsed = CategorySchema.safeParse({
     type: formData.get('type'),
     description: formData.get('description'),
+    userId: formData.get('userId'),
   })
 
   const pathname = parsed.data?.type === 'EXPENSE' ? '/despesa' : '/receita'
@@ -24,7 +25,11 @@ export async function create(
 
   try {
     await prisma.category.create({
-      data: { type: parsed.data.type, description: parsed.data.description },
+      data: {
+        type: parsed.data.type,
+        description: parsed.data.description,
+        userId: parsed.data.userId,
+      },
     })
   } catch (err) {
     if (err instanceof Error) {
@@ -40,8 +45,9 @@ export async function create(
   redirect(pathname)
 }
 
-export async function findMany() {
+export async function findMany(userId: number) {
   return prisma.category.findMany({
+    where: { userId },
     orderBy: { description: 'asc' },
   })
 }
