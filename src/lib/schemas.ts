@@ -14,6 +14,10 @@ export const CreateAccountSchema = z.object({
 })
 
 export const TransactionSchema = z.object({
+  userId: z
+    .string()
+    .transform((val) => parseInt(val))
+    .refine((val) => !isNaN(val) && val >= 1),
   type: z.enum(['EXPENSE', 'INCOME']),
   category: z
     .string()
@@ -39,7 +43,10 @@ export const TransactionSchema = z.object({
 })
 
 export const CategorySchema = z.object({
-  userId: z.number(),
+  userId: z
+    .string()
+    .transform((val) => parseInt(val))
+    .refine((val) => !isNaN(val) && val >= 1),
   type: z.enum(['EXPENSE', 'INCOME']),
   description: z.string().min(1, 'Informe a descrição'),
 })

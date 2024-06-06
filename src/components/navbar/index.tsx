@@ -3,7 +3,7 @@
 import { SquareMinus, SquarePlus, LogOut, Home, Menu } from 'lucide-react'
 import Link from 'next/link'
 import { ElementType, useEffect, useRef, useState } from 'react'
-import { Logotipo } from '../Logotipo'
+import { Logotipo } from '@/components/Logotipo'
 import { usePathname } from 'next/navigation'
 
 export function Navbar() {

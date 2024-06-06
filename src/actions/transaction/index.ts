@@ -12,6 +12,7 @@ export async function create(
   formData: FormData,
 ): Promise<TransactionFormState> {
   const parsed = TransactionSchema.safeParse({
+    userId: formData.get('userId'),
     type: formData.get('type'),
     category: formData.get('category'),
     description: formData.get('description'),
@@ -32,8 +33,6 @@ export async function create(
   const uuid = randomUUID()
 
   try {
-    console.log('Parsed data:', parsed.data)
-
     const promises = []
 
     for (let i = 0; i < parsed.data.recurrency; i++) {

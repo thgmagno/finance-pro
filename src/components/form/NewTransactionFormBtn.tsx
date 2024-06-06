@@ -9,22 +9,25 @@ import { Category } from '@/lib/types'
 import Link from 'next/link'
 
 interface Props {
+  userId: string
   categories: Category[]
 }
 
-export function NewTransactionFormBtn({ categories }: Props) {
+export function NewTransactionFormBtn({ userId, categories }: Props) {
   const [recurrent, setRecurrent] = useState(false)
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const form = searchParams.get('incluir') === 'despesa'
+  const formParams = searchParams.get('incluir')?.split(',') || []
+  const showTransactionForm =
+    formParams.includes('despesa') || formParams.includes('receita')
+  const showCategoryForm = formParams.includes('categoria')
 
   const TypeTransaction = pathname.includes('despesa') ? 'EXPENSE' : 'INCOME'
-  const formCategory = searchParams.get('incluir') === 'categoria'
 
   return (
     <>
-      {form ? (
+      {showTransactionForm ? (
         <>
           <div className="flex justify-end">
             <Link
@@ -37,6 +40,7 @@ export function NewTransactionFormBtn({ categories }: Props) {
 
           {/* Formulário Principal */}
           <NewTransactionForm
+            userId={userId}
             TypeTransaction={TypeTransaction}
             recurrent={recurrent}
             setRecurrent={setRecurrent}
@@ -44,10 +48,13 @@ export function NewTransactionFormBtn({ categories }: Props) {
           />
 
           {/* Formulário Secundário */}
-          {formCategory && (
+          {showCategoryForm && (
             <div className="absolute left-0 top-0 z-50 min-h-screen w-full flex-1 bg-neutral-900/95">
               <div className="flex items-center justify-center py-12">
-                <NewCategoryForm TypeTransaction={TypeTransaction} />
+                <NewCategoryForm
+                  userId={userId}
+                  TypeTransaction={TypeTransaction}
+                />
               </div>
             </div>
           )}
@@ -55,7 +62,12 @@ export function NewTransactionFormBtn({ categories }: Props) {
       ) : (
         <div className="flex justify-end">
           <Link
-            href={{ pathname, query: { incluir: 'despesa' } }}
+            href={{
+              pathname,
+              query: {
+                incluir: pathname.includes('despesa') ? 'despesa' : 'receita',
+              },
+            }}
             className="ml-auto flex h-9 items-center gap-1 rounded border border-slate-700 bg-green-700 px-2 font-medium"
           >
             <Plus size={18} />

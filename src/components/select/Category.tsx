@@ -3,7 +3,7 @@
 import { Category } from '@/lib/types'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 
 interface Props {
   options: Category[]
@@ -13,6 +13,20 @@ interface Props {
 
 export function SelectCategory({ options, isInvalid, errorMessage }: Props) {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const currentParams = new URLSearchParams(searchParams.toString())
+  const incluirParam = currentParams.get('incluir')
+
+  if (incluirParam) {
+    if (!incluirParam.includes('categoria')) {
+      currentParams.set('incluir', `${incluirParam},categoria`)
+    } else {
+      currentParams.set('incluir', 'categoria')
+    }
+  }
+
+  const newSearch = currentParams.toString()
 
   return (
     <div className="flex flex-col space-y-2 md:flex-row md:items-center">
@@ -36,7 +50,7 @@ export function SelectCategory({ options, isInvalid, errorMessage }: Props) {
             ))}
         </select>
         <Link
-          href={{ pathname, query: { incluir: 'categoria' } }}
+          href={`${pathname}?${newSearch}`}
           className="ml-2 rounded-full border bg-emerald-400 p-1 text-slate-100"
           aria-label="Incluir categoria"
         >

@@ -14,6 +14,7 @@ interface Props {
   recurrent: boolean
   setRecurrent: (value: boolean) => void
   categories: Category[]
+  userId: string
 }
 
 export function NewTransactionForm({
@@ -21,6 +22,7 @@ export function NewTransactionForm({
   recurrent,
   setRecurrent,
   categories,
+  userId,
 }: Props) {
   const [formState, action] = useFormState(actions.transaction.create, {
     errors: {},
@@ -34,6 +36,7 @@ export function NewTransactionForm({
       className="my-5 space-y-2.5 rounded-lg border bg-slate-200 p-2 text-slate-800"
     >
       {/* Metadados */}
+      <input type="hidden" name="userId" value={userId} />
       <input type="hidden" name="type" value={TypeTransaction} />
 
       {/* Categoria */}
@@ -50,6 +53,7 @@ export function NewTransactionForm({
         isInvalid={!!formState?.errors.description}
         errorMessage={formState?.errors.description}
         responsive
+        capitalize="auto"
       />
 
       {/* Valor */}

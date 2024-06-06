@@ -11,15 +11,17 @@ export async function create(
   formData: FormData,
 ): Promise<CategoryFormState> {
   const parsed = CategorySchema.safeParse({
+    userId: formData.get('userId'),
     type: formData.get('type'),
     description: formData.get('description'),
-    userId: formData.get('userId'),
   })
 
-  const pathname = parsed.data?.type === 'EXPENSE' ? '/despesa' : '/receita'
+  const uri =
+    parsed.data?.type === 'EXPENSE'
+      ? '/despesa?incluir=despesa'
+      : '/receita?incluir=receita'
 
   if (!parsed.success) {
-    console.log(parsed.error.message)
     return { errors: parsed.error.flatten().fieldErrors }
   }
 
@@ -42,7 +44,7 @@ export async function create(
   }
 
   revalidatePath('/')
-  redirect(pathname)
+  redirect(uri)
 }
 
 export async function findMany(userId: number) {
