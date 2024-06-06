@@ -19,7 +19,7 @@ export default async function Expense() {
       <NewTransactionFormBtn userId={id} categories={categories} />
       <h1>Despesa</h1>
       {filtered.length > 0 ? (
-        <GridTransactions data={filtered} />
+        <GridTransactions data={filtered} itemsPerPage={10} />
       ) : (
         <GridEmpty />
       )}
