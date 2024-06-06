@@ -6,16 +6,18 @@ import { NewTransactionForm } from './NewTransactionForm'
 import { NewCategoryForm } from './NewCategoryForm'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { Category } from '@/lib/types'
+import Link from 'next/link'
 
 interface Props {
   categories: Category[]
 }
 
 export function NewTransactionFormBtn({ categories }: Props) {
-  const [form, setForm] = useState(false)
   const [recurrent, setRecurrent] = useState(false)
   const pathname = usePathname()
   const searchParams = useSearchParams()
+
+  const form = searchParams.get('incluir') === 'despesa'
 
   const TypeTransaction = pathname.includes('despesa') ? 'EXPENSE' : 'INCOME'
   const formCategory = searchParams.get('incluir') === 'categoria'
@@ -24,12 +26,14 @@ export function NewTransactionFormBtn({ categories }: Props) {
     <>
       {form ? (
         <>
-          <button
-            onClick={() => setForm(false)}
-            className="ml-auto flex h-9 items-center gap-1 rounded border border-slate-700 bg-neutral-800/30 px-2 font-medium"
-          >
-            Cancelar
-          </button>
+          <div className="flex justify-end">
+            <Link
+              href={pathname}
+              className="flex h-9 items-center gap-1 rounded border border-slate-700 bg-neutral-800/30 px-2 font-medium"
+            >
+              Cancelar
+            </Link>
+          </div>
 
           {/* Formulário Principal */}
           <NewTransactionForm
@@ -49,13 +53,15 @@ export function NewTransactionFormBtn({ categories }: Props) {
           )}
         </>
       ) : (
-        <button
-          onClick={() => setForm(true)}
-          className="ml-auto flex h-9 items-center gap-1 rounded border border-slate-700 bg-green-700 px-2 font-medium"
-        >
-          <Plus size={18} />
-          Inserir
-        </button>
+        <div className="flex justify-end">
+          <Link
+            href={{ pathname, query: { incluir: 'despesa' } }}
+            className="ml-auto flex h-9 items-center gap-1 rounded border border-slate-700 bg-green-700 px-2 font-medium"
+          >
+            <Plus size={18} />
+            Inserir
+          </Link>
+        </div>
       )}
     </>
   )

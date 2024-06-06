@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useFormState } from 'react-dom'
 import { ButtonFormSubmit } from '../button/FormSubmit'
+import { InputText } from '../input/Text'
 
 interface Props {
   TypeTransaction: TypeTransaction
@@ -37,16 +38,19 @@ export function NewCategoryForm({ TypeTransaction }: Props) {
       </div>
 
       {/* Descrição */}
-      <div className="flex items-center gap-2">
-        <label htmlFor="">Descrição</label>
-        <input type="text" name="description" className="w-full" />
-      </div>
+      <InputText
+        name="description"
+        label="Descrição"
+        isInvalid={!!formState?.errors.description}
+        errorMessage={formState?.errors.description}
+        wFull
+      />
 
       {/* Retorno */}
       {formState?.success && <p>Categoria cadastrada com sucesso</p>}
 
       {/* Botão Salvar */}
-      <ButtonFormSubmit title="Salvar" className="submit" />
+      <ButtonFormSubmit title="Salvar" />
     </form>
   )
 }

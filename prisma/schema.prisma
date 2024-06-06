@@ -21,6 +21,7 @@ model Transaction {
   description String
   amount      Float
   month       Int
+  year        Int
   status      StatusTransaction @default(PENDING)
   type        TypeTransaction
   category    Category          @relation(fields: [categoryId], references: [id])

@@ -18,6 +18,7 @@ export async function create(
   const pathname = parsed.data?.type === 'EXPENSE' ? '/despesa' : '/receita'
 
   if (!parsed.success) {
+    console.log(parsed.error.message)
     return { errors: parsed.error.flatten().fieldErrors }
   }
 

@@ -7,23 +7,7 @@
     @apply bg-slate-900
   }
 
-  form input {
-    @apply p-2 rounded shadow outline-slate-400
-  }
-
-  form select {
-    @apply p-2 rounded shadow outline-slate-400
-  }
-
-  .input-wrapper {
-    @apply flex flex-col md:flex-row md:items-center mb-2
-  }
-
   .checkbox-wrapper {
     @apply flex items-center mb-2 gap-2 md:gap-0
-  }
-
-  .submit {
-    @apply bg-green-600 p-1 w-full font-medium text-slate-100 rounded-lg mt-3 hover:opacity-90
   }
 }
