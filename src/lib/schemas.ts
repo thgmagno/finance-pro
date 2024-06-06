@@ -2,8 +2,15 @@ import { parseCurrency } from '@/utils/parseCurrency'
 import { z } from 'zod'
 
 export const LoginSchema = z.object({
-  username: z.string(),
-  password: z.string(),
+  username: z.string().min(1, 'Informe o usuário'),
+  password: z.string().min(1, 'Informe a senha'),
+})
+
+export const CreateAccountSchema = z.object({
+  name: z.string().min(1, 'Informe o nome'),
+  username: z.string().min(1, 'Informe o usuário'),
+  password: z.string().min(1, 'Informe a senha'),
+  confirmPassword: z.string().min(1, 'Confirme a senha'),
 })
 
 export const TransactionSchema = z.object({
@@ -21,7 +28,7 @@ export const TransactionSchema = z.object({
     .refine((val) => {
       const clearedValue = parseCurrency(val)
       return !isNaN(clearedValue) && clearedValue >= 0.01
-    }, 'Informe um valor')
+    }, 'Informe o valor')
     .transform((val) => parseCurrency(val)),
   recurrency: z
     .string()

@@ -6,6 +6,16 @@ export interface LoginFormState {
   }
 }
 
+export interface CreateAccountFormState {
+  errors: {
+    name?: string[]
+    username?: string[]
+    password?: string[]
+    confirmPassword?: string[]
+    _form?: string
+  }
+}
+
 export interface TransactionFormState {
   errors: {
     description?: string[]

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import { Lato } from 'next/font/google'
+import { Montserrat } from 'next/font/google'
 import './globals.css'
 
-const lato = Lato({ subsets: ['latin'], weight: ['300', '400', '700'] })
+const montserrat = Montserrat({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'FinancePro',
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={lato.className}>{children}</body>
+      <body className={montserrat.className}>{children}</body>
     </html>
   )
 }

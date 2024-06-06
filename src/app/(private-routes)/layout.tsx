@@ -1,10 +1,16 @@
 import { Navbar } from '@/components/navbar'
+import { useSession } from '@/hooks/useSession'
+import { redirect } from 'next/navigation'
 
-export default function PrivateLayout({
+export default async function PrivateLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const { id, username } = await useSession()
+
+  if (!id || !username) redirect('/entrar')
+
   return (
     <>
       <Navbar />

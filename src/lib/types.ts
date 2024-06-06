@@ -1,3 +1,9 @@
+export type PayloadType = {
+  id: string
+  name: string
+  username: string
+}
+
 export type TypeTransaction = 'EXPENSE' | 'INCOME'
 
 export type SelectOptions = {

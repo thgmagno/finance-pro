@@ -49,6 +49,7 @@ export function NewTransactionForm({
         label="Descrição"
         isInvalid={!!formState?.errors.description}
         errorMessage={formState?.errors.description}
+        responsive
       />
 
       {/* Valor */}

@@ -7,8 +7,8 @@ import { InputText } from '../input/Text'
 import { InputPassword } from '../input/Password'
 import Link from 'next/link'
 
-export function LoginForm() {
-  const [formState, action] = useFormState(actions.auth.login, {
+export function CreateAccountForm() {
+  const [formState, action] = useFormState(actions.auth.createAccount, {
     errors: {},
   })
 
@@ -17,6 +17,13 @@ export function LoginForm() {
       action={action}
       className="flex w-full max-w-sm flex-col space-y-5 rounded-lg bg-slate-200 p-5 shadow"
     >
+      <InputText
+        name="name"
+        label="Nome"
+        isInvalid={!!formState?.errors.name}
+        errorMessage={formState?.errors.name}
+        capitalize="auto"
+      />
       <InputText
         name="username"
         label="Usuário"
@@ -27,10 +34,13 @@ export function LoginForm() {
       <InputPassword
         isInvalid={!!formState?.errors.password}
         errorMessage={formState?.errors.password}
+        confirmationIsInvalid={!!formState?.errors.confirmPassword}
+        confirmationErrorMessage={formState?.errors.confirmPassword}
+        withConfirmation
       />
-      <ButtonFormSubmit title="Acessar" />
+      <ButtonFormSubmit title="Criar conta" />
       <div className="flex justify-center text-sm hover:underline">
-        <Link href="/cadastrar">ainda não tenho uma conta</Link>
+        <Link href="/entrar">já tenho uma conta</Link>
       </div>
     </form>
   )
