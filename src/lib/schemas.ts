@@ -44,6 +44,17 @@ export const TransactionSchema = z.object({
   startYear: z.string().transform((val) => parseInt(val)),
 })
 
+export const UpdateTransactionSchema = z.object({
+  transactionId: z.string().transform((val) => parseInt(val)),
+  amount: z
+    .string()
+    .refine((val) => {
+      const clearedValue = parseCurrency(val)
+      return !isNaN(clearedValue) && clearedValue >= 0.01
+    }, 'Informe o valor')
+    .transform((val) => parseCurrency(val)),
+})
+
 export const CategorySchema = z.object({
   userId: z
     .string()

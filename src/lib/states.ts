@@ -26,6 +26,14 @@ export interface TransactionFormState {
   }
 }
 
+export interface UpdateTransactionFormState {
+  success: boolean
+  errors: {
+    amount?: string[]
+    _form?: string
+  }
+}
+
 export interface CategoryFormState {
   success?: boolean
   errors: {

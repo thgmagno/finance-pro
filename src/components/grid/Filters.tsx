@@ -133,6 +133,7 @@ export function GridFilters({
           value={filters.searchTerm}
           onChange={handleSearchTermChange}
           className="bg-transparent outline-none"
+          placeholder="Pesquisar"
         />
         <Search className="absolute right-1" size={20} />
       </div>

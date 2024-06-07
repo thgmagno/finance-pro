@@ -1,8 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { TransactionSchema } from '@/lib/schemas'
-import { TransactionFormState } from '@/lib/states'
+import { TransactionSchema, UpdateTransactionSchema } from '@/lib/schemas'
+import { TransactionFormState, UpdateTransactionFormState } from '@/lib/states'
 import { StatusTransaction, Transaction } from '@/lib/types'
 import { randomUUID } from 'crypto'
 import { revalidatePath } from 'next/cache'
@@ -99,4 +99,33 @@ export async function changeStatus(id: number, newStatus: StatusTransaction) {
   })
 
   revalidatePath('/')
+}
+
+export async function update(
+  formState: UpdateTransactionFormState,
+  formData: FormData,
+): Promise<UpdateTransactionFormState> {
+  const parsed = UpdateTransactionSchema.safeParse({
+    transactionId: formData.get('transactionId'),
+    amount: formData.get('amount'),
+  })
+
+  if (!parsed.success) {
+    console.log(formData, parsed.error.message)
+    return { success: false, errors: parsed.error.flatten().fieldErrors }
+  }
+
+  try {
+    await prisma.transaction.update({
+      where: { id: parsed.data.transactionId },
+      data: { amount: parsed.data.amount },
+    })
+  } catch (err) {
+    if (err instanceof Error) {
+      return { success: false, errors: { _form: 'Ocorreu um erro ao salvar' } }
+    }
+  }
+
+  revalidatePath('/')
+  return { success: true, errors: {} }
 }

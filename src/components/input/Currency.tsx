@@ -1,17 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface Props {
   name: string
   isInvalid: boolean
   errorMessage?: string[]
+  noLabel?: boolean
+  defaultValue?: number
+  textDark?: boolean
 }
 
-export function InputCurrencyBRL({ name, isInvalid, errorMessage }: Props) {
+export function InputCurrencyBRL({
+  name,
+  isInvalid,
+  errorMessage,
+  noLabel,
+  defaultValue,
+  textDark,
+}: Props) {
   const [value, setValue] = useState('')
 
-  const onChange = (value: string) => {
+  const formatValue = (value: string): string => {
     let newValue = value.replace(/[^\d]/g, '')
 
     newValue = newValue.replace(/^0+/, '')
@@ -28,14 +38,27 @@ export function InputCurrencyBRL({ name, isInvalid, errorMessage }: Props) {
       '.',
     )
 
-    newValue = `${formattedIntegerPart},${decimalPart}`
+    return `R$ ${formattedIntegerPart},${decimalPart}`
+  }
 
-    setValue(`R$ ${newValue}`)
+  const formatDefaultValue = (value: number): string => {
+    const cents = Math.round(value * 100).toString()
+    return formatValue(cents)
+  }
+
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(formatDefaultValue(defaultValue))
+    }
+  }, [defaultValue])
+
+  const onChange = (value: string) => {
+    setValue(formatValue(value))
   }
 
   return (
     <div className="flex flex-col space-y-2 md:flex-row md:items-center">
-      <label htmlFor="" className="md:w-40">
+      <label htmlFor="" className={`md:w-40 ${noLabel ? 'hidden' : ''}`}>
         Valor
       </label>
       <div className="relative flex flex-1">
@@ -49,7 +72,7 @@ export function InputCurrencyBRL({ name, isInvalid, errorMessage }: Props) {
           spellCheck="false"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`flex-1 rounded p-2 shadow ${isInvalid ? 'border-2 border-red-500 outline-none' : 'outline-slate-400'}`}
+          className={`flex-1 rounded p-2 shadow ${isInvalid ? 'border-2 border-red-500 outline-none' : 'outline-slate-400'} ${textDark ? 'font-normal text-zinc-900' : ''}`}
         />
         {errorMessage && (
           <span className="absolute bottom-1 right-1.5 text-sm text-red-500">

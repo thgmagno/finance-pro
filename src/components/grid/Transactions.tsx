@@ -3,13 +3,14 @@
 import { Transaction } from '@/lib/types'
 import { currencyBRL } from '@/utils/currencyBRL'
 import { monthToString } from '@/utils/monthToString'
-import { Circle } from 'lucide-react'
+import { Square } from 'lucide-react'
 import { useState } from 'react'
 import { DeleteBox } from '../dialog/DeleteBox'
 import { getStatusColor } from '@/utils/getStatusColor'
 import { SelectStatus } from '../select/Status'
 import { GridFilters, initialState } from './Filters'
 import { normalizeString } from '@/utils/normalizeString'
+import { UpdateBox } from '../dialog/UpdateBox'
 
 interface Props {
   data: Transaction[]
@@ -125,12 +126,13 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
                     transaction={row}
                     data={data.filter((dt) => dt.uuid === row.uuid)}
                   />
-                  <Circle
+                  <UpdateBox transaction={row} />
+                  <Square
                     onClick={() => handleSelectTransaction(row)}
                     size={20}
                     className={`cursor-pointer ${
                       selectedTransactions.find((t) => t.id === row.id)
-                        ? 'rounded-full bg-green-500 text-slate-900'
+                        ? 'rounded bg-green-500 text-slate-900'
                         : ''
                     }`}
                   />
@@ -167,7 +169,7 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
         </div>
       </div>
       {sumSelectedTransactions > 0 && (
-        <div className="absolute bottom-3 right-3 rounded-md border-2 border-slate-700 bg-slate-800 px-2.5 py-1.5 shadow-md md:bottom-5 md:right-5">
+        <div className="absolute bottom-3 right-3 rounded-md border-2 border-slate-400 bg-green-600 px-2.5 py-1.5 font-medium shadow-md md:bottom-5 md:right-5">
           Total: {currencyBRL(sumSelectedTransactions)}
         </div>
       )}
