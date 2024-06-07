@@ -147,7 +147,7 @@ export function GridTransactions({ data }: Props) {
           Nada foi encontrado. Verifique os critérios de busca.
         </span>
       )}
-      <div className="mb-20 flex flex-col items-baseline justify-between gap-2 py-2">
+      <div className="mb-20 flex flex-col items-baseline justify-center gap-2 py-2 md:justify-between">
         <div className="flex items-center gap-2">
           <span className="text-sm">Mostrar</span>
           <select
