@@ -142,7 +142,7 @@ export function GridFilters({
       {!isEqual && (
         <div
           title="Redefinir filtros"
-          className="absolute right-0 top-0 md:relative"
+          className="absolute right-0 top-0 cursor-pointer md:relative"
         >
           <RefreshCcw
             onClick={clearFilters}

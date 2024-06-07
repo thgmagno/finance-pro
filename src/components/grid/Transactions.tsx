@@ -147,7 +147,7 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
           Nada foi encontrado. Verifique os critérios de busca.
         </span>
       )}
-      <div className="mb-10 flex items-baseline justify-between py-2">
+      <div className="mb-20 flex items-baseline justify-between py-2">
         <span className="text-sm">
           Página {currentPage} de {totalPages}
         </span>
@@ -169,7 +169,7 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
         </div>
       </div>
       {sumSelectedTransactions > 0 && (
-        <div className="absolute bottom-3 right-3 rounded-md border-2 border-slate-400 bg-green-600 px-2.5 py-1.5 font-medium shadow-md md:bottom-5 md:right-5">
+        <div className="fixed bottom-3 right-3 rounded-md border-2 border-slate-400 bg-green-600 px-2.5 py-1.5 font-medium shadow-md md:bottom-5 md:right-5">
           Total: {currencyBRL(sumSelectedTransactions)}
         </div>
       )}
