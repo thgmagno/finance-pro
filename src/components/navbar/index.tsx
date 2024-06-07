@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ElementType, useEffect, useRef, useState } from 'react'
 import { Logotipo } from '@/components/Logotipo'
 import { usePathname } from 'next/navigation'
+import { actions } from '@/actions'
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
@@ -85,7 +86,10 @@ export function Navbar() {
             classNames="text-green-500"
           />
           <li className="flex">
-            <button className="flex flex-1 items-center rounded border border-slate-400 bg-slate-700 p-1.5 text-red-500">
+            <button
+              onClick={async () => await actions.auth.logout()}
+              className="flex flex-1 items-center rounded border border-slate-400 bg-slate-700 p-1.5 text-red-500"
+            >
               <LogOut className="mr-1.5 h-5 w-5" /> Finalizar sessão
             </button>
           </li>
