@@ -65,7 +65,7 @@ export function GridFilters({
   const isEqual = JSON.stringify(filters) === JSON.stringify(initialState)
 
   return (
-    <div className="mt-8 flex items-center space-x-3 pb-3">
+    <div className="flex flex-col gap-3 md:flex-row md:items-center">
       <span>Filtrar:</span>
 
       {/* Meses */}

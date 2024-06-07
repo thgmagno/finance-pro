@@ -79,19 +79,22 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="my-3 flex flex-col justify-between md:flex-row md:items-center">
         <GridFilters
           data={data}
           filters={filters}
           setFilters={setFilters}
           setCurrentPage={setCurrentPage}
         />
-        <div className="mt-4">
+
+        {/* Total */}
+        <div className="mt-3 flex justify-end md:mt-0">
           <span>
             Total: <b>{currencyBRL(totalAmount)}</b>
           </span>
         </div>
       </div>
+
       <div className="no-scrollbar flex flex-col overflow-scroll rounded bg-slate-800">
         <table className="w-full border-b-2">
           <thead>
