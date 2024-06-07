@@ -33,6 +33,7 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
     const matchesYear = filters.year
       ? item.year === parseInt(filters.year)
       : true
+    const matchesStatus = filters.status ? item.status === filters.status : true
     const matchesSearchTerm = filters.searchTerm
       ? normalizeString(item.description).includes(
           normalizeString(filters.searchTerm),
@@ -41,7 +42,7 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
           normalizeString(filters.searchTerm),
         )
       : true
-    return matchesMonth && matchesYear && matchesSearchTerm
+    return matchesMonth && matchesYear && matchesStatus && matchesSearchTerm
   })
 
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
@@ -139,6 +140,11 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
           </tbody>
         </table>
       </div>
+      {!totalPages && (
+        <span className="flex items-center justify-center rounded-b-md bg-slate-800 py-8 text-sm text-zinc-400 md:text-base">
+          Nada foi encontrado. Verifique os critérios de busca.
+        </span>
+      )}
       <div className="mb-10 flex items-baseline justify-between py-2">
         <span className="text-sm">
           Página {currentPage} de {totalPages}

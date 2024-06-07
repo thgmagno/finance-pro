@@ -39,4 +39,5 @@ export type Filter = {
   month: string
   year: string
   searchTerm: string
+  status: string
 }

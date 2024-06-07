@@ -19,6 +19,7 @@ export const initialState = {
   month: currentMonth.toString(),
   year: currentYear.toString(),
   searchTerm: '',
+  status: '',
 }
 
 export function GridFilters({
@@ -47,6 +48,14 @@ export function GridFilters({
     setFilters({
       ...filters,
       year: event.target.value,
+    })
+    setCurrentPage(1)
+  }
+
+  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilters({
+      ...filters,
+      status: event.target.value,
     })
     setCurrentPage(1)
   }
@@ -97,6 +106,20 @@ export function GridFilters({
             {year}
           </option>
         ))}
+      </select>
+
+      {/* Status */}
+      <select
+        value={filters.status}
+        onChange={handleStatusChange}
+        className="h-8 rounded-md bg-slate-800 p-1.5"
+        aria-label="Selecionar status"
+        title="Selecionar status"
+      >
+        <option value="">Status</option>
+        <option value="OK">Baixado</option>
+        <option value="PENDING">Pendente</option>
+        <option value="OVERDUE">Atrasado</option>
       </select>
 
       {/* Termo */}
