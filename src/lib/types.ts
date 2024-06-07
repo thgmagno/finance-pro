@@ -19,6 +19,9 @@ export type Transaction = {
   categoryId: number
   userId: number
   uuid: string | null
+  category: {
+    description: string
+  }
 }
 
 export type SelectOptions = {

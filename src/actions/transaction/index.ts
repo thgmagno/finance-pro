@@ -66,6 +66,9 @@ export async function create(
   redirect(pathname)
 }
 
-export async function findMany() {
-  return prisma.transaction.findMany()
+export async function findMany(userId: number) {
+  return prisma.transaction.findMany({
+    where: { userId },
+    include: { category: { select: { description: true } } },
+  })
 }

@@ -8,7 +8,7 @@ export default async function Expense() {
   const { id } = await useSession()
 
   const [transactions, categories] = await Promise.all([
-    actions.transaction.findMany(),
+    actions.transaction.findMany(parseInt(id)),
     actions.category.findMany(parseInt(id)),
   ])
 
@@ -17,7 +17,7 @@ export default async function Expense() {
   return (
     <>
       <NewTransactionFormBtn userId={id} categories={categories} />
-      <h1>Despesa</h1>
+      <h1 className="title">Despesa</h1>
       {filtered.length > 0 ? (
         <GridTransactions data={filtered} itemsPerPage={10} />
       ) : (
