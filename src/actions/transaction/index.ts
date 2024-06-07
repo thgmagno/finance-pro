@@ -34,13 +34,14 @@ export async function create(
   const uuid = randomUUID()
 
   try {
-    const promises = []
+    const transactions = []
 
     for (let i = 0; i < parsed.data.recurrency; i++) {
-      const month = (currentMonth + i) % 12
-      const year = currentYear + Math.floor((currentMonth + i) / 12)
+      const date = new Date(currentYear, currentMonth + i)
+      const month = date.getMonth()
+      const year = date.getFullYear()
 
-      promises.push(
+      transactions.push(
         prisma.transaction.create({
           data: {
             description: parsed.data.description,
@@ -49,14 +50,14 @@ export async function create(
             year,
             type: parsed.data.type,
             categoryId: parsed.data.category,
-            userId: 1,
+            userId: parsed.data.userId,
             uuid,
           },
         }),
       )
     }
 
-    await Promise.all(promises)
+    await Promise.all(transactions)
   } catch (err) {
     if (err instanceof Error) {
       return { errors: { _form: 'Ocorreu um erro ao salvar' } }
