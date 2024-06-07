@@ -40,6 +40,8 @@ export const TransactionSchema = z.object({
     .transform((val) =>
       val === 'empty' || !val ? 1 : parseInt(val.replace('x', '')),
     ),
+  startMonth: z.string().transform((val) => parseInt(val)),
+  startYear: z.string().transform((val) => parseInt(val)),
 })
 
 export const CategorySchema = z.object({

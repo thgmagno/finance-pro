@@ -19,6 +19,8 @@ export async function create(
     description: formData.get('description'),
     amount: formData.get('amount'),
     recurrency: formData.get('recurrency'),
+    startMonth: formData.get('startMonth'),
+    startYear: formData.get('startYear'),
   })
 
   if (!parsed.success) {
@@ -27,17 +29,13 @@ export async function create(
 
   const pathname = parsed.data?.type === 'EXPENSE' ? '/despesa' : '/receita'
 
-  const currentDate = new Date()
-  const currentMonth = currentDate.getMonth()
-  const currentYear = currentDate.getFullYear()
-
   const uuid = randomUUID()
 
   try {
     const transactions = []
 
     for (let i = 0; i < parsed.data.recurrency; i++) {
-      const date = new Date(currentYear, currentMonth + i)
+      const date = new Date(parsed.data.startYear, parsed.data.startMonth + i)
       const month = date.getMonth()
       const year = date.getFullYear()
 
@@ -72,7 +70,7 @@ export async function findMany(userId: number) {
   return prisma.transaction.findMany({
     where: { userId },
     include: { category: { select: { description: true } } },
-    orderBy: [{ month: 'desc' }, { description: 'asc' }],
+    orderBy: [{ month: 'desc' }, { year: 'desc' }, { description: 'asc' }],
   })
 }
 

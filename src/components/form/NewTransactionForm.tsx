@@ -8,6 +8,7 @@ import { InputText } from '@/components/input/Text'
 import { SelectCategory } from '@/components/select/Category'
 import { SelectRecurrency } from '@/components/select/Recurrency'
 import { InputCurrencyBRL } from '@/components/input/Currency'
+import { SelectStartDate } from '@/components/select/StartDate'
 
 interface Props {
   TypeTransaction: TypeTransaction
@@ -62,6 +63,9 @@ export function NewTransactionForm({
         isInvalid={!!formState?.errors.amount}
         errorMessage={formState?.errors.amount}
       />
+
+      {/* Início */}
+      <SelectStartDate />
 
       {/* Recorrente */}
       <SelectRecurrency recurrent={recurrent} setRecurrent={setRecurrent} />
