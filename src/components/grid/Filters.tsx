@@ -65,7 +65,7 @@ export function GridFilters({
   const isEqual = JSON.stringify(filters) === JSON.stringify(initialState)
 
   return (
-    <div className="flex flex-col gap-3 md:flex-row md:items-center">
+    <div className="relative flex flex-col gap-3 md:flex-row md:items-center">
       <span>Filtrar:</span>
 
       {/* Meses */}
@@ -116,7 +116,10 @@ export function GridFilters({
 
       {/* Limpar */}
       {!isEqual && (
-        <div title="Redefinir filtros">
+        <div
+          title="Redefinir filtros"
+          className="absolute right-0 top-0 md:relative"
+        >
           <RefreshCcw
             onClick={clearFilters}
             size={20}

@@ -88,7 +88,7 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
         />
 
         {/* Total */}
-        <div className="mt-3 flex justify-end md:mt-0">
+        <div className="mt-4 flex justify-end md:mt-0">
           <span>
             Total: <b>{currencyBRL(totalAmount)}</b>
           </span>
