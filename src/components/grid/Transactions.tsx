@@ -27,7 +27,9 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
     : data
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
 
-  const extractDataMonths = Array.from(new Set(data.map((item) => item.month)))
+  const extractDataMonths = Array.from(
+    new Set(data.map((item) => item.month)),
+  ).reverse()
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage)
 

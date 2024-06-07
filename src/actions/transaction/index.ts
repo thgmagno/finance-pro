@@ -72,6 +72,7 @@ export async function findMany(userId: number) {
   return prisma.transaction.findMany({
     where: { userId },
     include: { category: { select: { description: true } } },
+    orderBy: [{ month: 'desc' }, { description: 'asc' }],
   })
 }
 
