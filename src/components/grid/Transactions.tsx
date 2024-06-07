@@ -8,6 +8,8 @@ import { useState } from 'react'
 import { DeleteBox } from '../dialog/DeleteBox'
 import { getStatusColor } from '@/utils/getStatusColor'
 import { SelectStatus } from '../select/Status'
+import { GridFilters, initialState } from './Filters'
+import { normalizeString } from '@/utils/normalizeString'
 
 interface Props {
   data: Transaction[]
@@ -15,22 +17,34 @@ interface Props {
 }
 
 export function GridTransactions({ data, itemsPerPage }: Props) {
+  const [filters, setFilters] = useState(initialState)
   const [currentPage, setCurrentPage] = useState(1)
-  const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedTransactions, setSelectedTransactions] = useState<
     Transaction[]
   >([])
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const filteredData = selectedMonth
-    ? data.filter((item) => item.month === parseInt(selectedMonth))
-    : data
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
 
-  const extractDataMonths = Array.from(
-    new Set(data.map((item) => item.month)),
-  ).reverse()
+  const filteredData = data.filter((item) => {
+    const matchesMonth = filters.month
+      ? item.month === parseInt(filters.month)
+      : true
+    const matchesYear = filters.year
+      ? item.year === parseInt(filters.year)
+      : true
+    const matchesSearchTerm = filters.searchTerm
+      ? normalizeString(item.description).includes(
+          normalizeString(filters.searchTerm),
+        ) ||
+        normalizeString(item.category.description).includes(
+          normalizeString(filters.searchTerm),
+        )
+      : true
+    return matchesMonth && matchesYear && matchesSearchTerm
+  })
+
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage)
 
@@ -45,11 +59,6 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
 
   const prevPage = () => {
     setCurrentPage((prevPage) => prevPage - 1)
-  }
-
-  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMonth(event.target.value)
-    setCurrentPage(1)
   }
 
   const handleSelectTransaction = (transaction: Transaction) => {
@@ -71,21 +80,12 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
   return (
     <>
       <div className="flex items-center justify-between">
-        <div className="mt-8 flex items-center space-x-3 pb-3">
-          <span>Filtrar:</span>
-          <select
-            value={selectedMonth}
-            onChange={handleMonthChange}
-            className="rounded-md bg-slate-800 p-1.5"
-          >
-            <option value="">Todos</option>
-            {extractDataMonths.map((month) => (
-              <option key={month} value={month.toString()}>
-                {monthToString(month)}
-              </option>
-            ))}
-          </select>
-        </div>
+        <GridFilters
+          data={data}
+          filters={filters}
+          setFilters={setFilters}
+          setCurrentPage={setCurrentPage}
+        />
         <div className="mt-4">
           <span>
             Total: <b>{currencyBRL(totalAmount)}</b>

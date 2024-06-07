@@ -34,3 +34,9 @@ export type Category = {
   description: string
   type: TypeTransaction
 }
+
+export type Filter = {
+  month: string
+  year: string
+  searchTerm: string
+}
