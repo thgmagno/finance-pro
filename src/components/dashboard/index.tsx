@@ -1,29 +1,49 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Bar } from 'react-chartjs-2'
+import { Transaction } from '@/lib/types'
+import { Line } from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  LinearScale,
+  CategoryScale,
+  LineElement,
+  PointElement,
+  Legend,
+  Title,
+} from 'chart.js'
 
-export default function Dashboard() {
-  const [data, setData] = useState([])
+ChartJS.register(
+  LinearScale,
+  CategoryScale,
+  LineElement,
+  PointElement,
+  Legend,
+  Title,
+)
 
-  useEffect(() => {
-    // Carregar dados das receitas e despesas
-  }, [])
+export function Dashboard({ data }: { data: Transaction[] }) {
+  const despesasTotal = data
+    .filter((dt) => dt.type === 'EXPENSE')
+    .reduce((total, current) => total + current.amount, 0)
+
+  const receitasTotal = data
+    .filter((dt) => dt.type === 'INCOME')
+    .reduce((total, current) => total + current.amount, 0)
 
   const chartData = {
     labels: ['Receitas', 'Despesas'],
     datasets: [
       {
         label: 'Valor',
-        data: [],
+        data: [receitasTotal, despesasTotal],
         backgroundColor: ['#36A2EB', '#FF6384'],
       },
     ],
   }
 
   return (
-    <div>
-      <Bar data={chartData} />
+    <div className="px-10">
+      <Line data={chartData} />
     </div>
   )
 }

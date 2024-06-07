@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { TransactionSchema } from '@/lib/schemas'
 import { TransactionFormState } from '@/lib/states'
+import { Transaction } from '@/lib/types'
 import { randomUUID } from 'crypto'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -71,4 +72,22 @@ export async function findMany(userId: number) {
     where: { userId },
     include: { category: { select: { description: true } } },
   })
+}
+
+export async function deleteMany(transactions: Transaction[]) {
+  const IDs = transactions.map((item) => item.uuid)
+
+  await prisma.transaction.deleteMany({
+    where: {
+      uuid: { in: IDs as string[] },
+    },
+  })
+
+  revalidatePath('/')
+}
+
+export async function deleteUnique(transaction: Transaction) {
+  await prisma.transaction.delete({ where: { id: transaction.id } })
+
+  revalidatePath('/')
 }

@@ -4,8 +4,9 @@ import { Transaction } from '@/lib/types'
 import { currencyBRL } from '@/utils/currencyBRL'
 import { monthToString } from '@/utils/monthToString'
 import { translateStatusBRL } from '@/utils/translateStatusBRL'
-import { Circle, Trash2 } from 'lucide-react'
+import { Circle } from 'lucide-react'
 import { useState } from 'react'
+import { DeleteBox } from '../dialog/DeleteBox'
 
 interface Props {
   data: Transaction[]
@@ -64,13 +65,6 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
     0,
   )
 
-  // const handleDelete = (transaction: Transaction) => {
-  //   const countTransactions = data.filter(
-  //     (item) => item.uuid === transaction.uuid,
-  //   ).length
-
-  // }
-
   return (
     <>
       <div className="flex items-center justify-between">
@@ -118,9 +112,9 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
                 <td>{translateStatusBRL(row.status)}</td>
                 <td>{row.category.description}</td>
                 <td className="flex items-center justify-evenly">
-                  <Trash2
-                    size={20}
-                    className="cursor-pointer text-red-500 active:scale-95"
+                  <DeleteBox
+                    transaction={row}
+                    data={data.filter((dt) => dt.uuid === row.uuid)}
                   />
                   <Circle
                     onClick={() => handleSelectTransaction(row)}
