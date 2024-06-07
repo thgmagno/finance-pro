@@ -14,11 +14,11 @@ import { UpdateBox } from '../dialog/UpdateBox'
 
 interface Props {
   data: Transaction[]
-  itemsPerPage: number
 }
 
-export function GridTransactions({ data, itemsPerPage }: Props) {
+export function GridTransactions({ data }: Props) {
   const [filters, setFilters] = useState(initialState)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedTransactions, setSelectedTransactions] = useState<
     Transaction[]
@@ -148,6 +148,28 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
         </span>
       )}
       <div className="mb-20 flex items-baseline justify-between py-2">
+        <div className="flex items-center gap-2">
+          <span className="text-sm">Mostrar</span>
+          <select
+            defaultValue={itemsPerPage}
+            onChange={(e) => setItemsPerPage(parseInt(e.target.value))}
+            className="bg-transparent"
+          >
+            <option value={10} className="bg-slate-700">
+              10
+            </option>
+            <option value={25} className="bg-slate-700">
+              25
+            </option>
+            <option value={50} className="bg-slate-700">
+              50
+            </option>
+            <option value={100} className="bg-slate-700">
+              100
+            </option>
+          </select>
+          <span className="text-sm">por página</span>
+        </div>
         <span className="text-sm">
           Página {currentPage} de {totalPages}
         </span>

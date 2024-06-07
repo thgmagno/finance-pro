@@ -19,7 +19,7 @@ export default async function Income() {
       <NewTransactionFormBtn userId={id} categories={categories} />
       <h1 className="title">Receita</h1>
       {filtered.length > 0 ? (
-        <GridTransactions data={filtered} itemsPerPage={10} />
+        <GridTransactions data={filtered} />
       ) : (
         <GridEmpty />
       )}
