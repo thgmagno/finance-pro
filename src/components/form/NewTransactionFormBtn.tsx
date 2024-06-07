@@ -49,7 +49,7 @@ export function NewTransactionFormBtn({ userId, categories }: Props) {
 
           {/* Formulário Secundário */}
           {showCategoryForm && (
-            <div className="absolute left-0 top-0 z-50 min-h-screen w-full flex-1 bg-neutral-900/95">
+            <div className="fixed left-0 top-0 z-50 min-h-screen w-full flex-1 bg-neutral-900/95">
               <div className="flex items-center justify-center py-12">
                 <NewCategoryForm
                   userId={userId}

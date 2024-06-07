@@ -46,46 +46,49 @@ export function DeleteBox({ transaction, data }: Props) {
         className="cursor-pointer text-red-500 active:scale-95"
       />
       {open && (
-        <div className="absolute left-0 top-0 z-50 min-h-screen w-full flex-1 bg-neutral-900/95">
+        <div className="fixed left-0 top-0 z-50 min-h-screen w-full bg-neutral-900/95">
           <div className="mx-auto flex max-w-lg flex-col items-center justify-center px-5 py-12">
-            <div className="flex flex-col rounded-lg border border-zinc-400 bg-neutral-800/60 p-2.5">
+            <div className="flex flex-col rounded-lg border border-zinc-400 bg-neutral-800/60 p-3.5">
               <X
                 onClick={() => setOpen(false)}
                 className="cursor-pointer self-end"
               />
               {data.length > 1 ? (
                 <>
-                  <h1 className="mb-5 text-red-500">
-                    Existem outros lançamentos vinculados a este
-                  </h1>
-                  <ul>
-                    {data.map((item) => (
-                      <li
-                        key={item.id}
-                        className={`${transaction.id === item.id ? 'text-green-500' : ''}`}
-                      >
-                        {item.description} - {monthToString(item.month)}/
-                        {item.year} - <b>{currencyBRL(item.amount)}</b>
-                      </li>
-                    ))}
-                  </ul>
-                  <h2>O que deseja fazer?</h2>
-                  <button
-                    onClick={() => deleteMany(data)}
-                    className="mt-5 rounded-md border border-zinc-400 px-2.5 py-1.5"
-                  >
-                    Apagar todos
-                  </button>
+                  <div className="my-2.5 flex flex-col space-y-2">
+                    <span>Existem outros lançamentos vinculados a este:</span>
+                    <ul>
+                      {data
+                        .map((item) => (
+                          <li
+                            key={item.id}
+                            className={`${transaction.id === item.id ? 'text-green-500 underline' : ''}`}
+                          >
+                            {item.description} - {monthToString(item.month)}/
+                            {item.year} - <b>{currencyBRL(item.amount)}</b>
+                          </li>
+                        ))
+                        .reverse()}
+                    </ul>
+                    <span className="font-medium">O que deseja fazer?</span>
+                  </div>
+
                   <button
                     onClick={() => deleteUnique(transaction)}
-                    className="rounded-md border border-zinc-400 px-2.5 py-1.5"
+                    className="my-2 rounded-md border border-zinc-400 px-2.5 py-1.5 text-green-500 underline"
                   >
                     Apagar somente este lançamento
+                  </button>
+                  <button
+                    onClick={() => deleteMany(data)}
+                    className="rounded-md border border-zinc-400 px-2.5 py-1.5 text-red-500"
+                  >
+                    Apagar todos
                   </button>
                 </>
               ) : (
                 <>
-                  <h1 className="mb-5 text-red-500">Excluir lançamento?</h1>
+                  <h1 className="my-3 mb-5">Excluir lançamento?</h1>
                   <p>
                     {transaction.description} -{' '}
                     {monthToString(transaction.month)}/{transaction.year} -{' '}
