@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { TransactionSchema } from '@/lib/schemas'
 import { TransactionFormState } from '@/lib/states'
-import { Transaction } from '@/lib/types'
+import { StatusTransaction, Transaction } from '@/lib/types'
 import { randomUUID } from 'crypto'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -90,6 +90,15 @@ export async function deleteMany(transactions: Transaction[]) {
 
 export async function deleteUnique(transaction: Transaction) {
   await prisma.transaction.delete({ where: { id: transaction.id } })
+
+  revalidatePath('/')
+}
+
+export async function changeStatus(id: number, newStatus: StatusTransaction) {
+  await prisma.transaction.update({
+    where: { id },
+    data: { status: newStatus },
+  })
 
   revalidatePath('/')
 }

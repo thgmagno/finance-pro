@@ -3,10 +3,11 @@
 import { Transaction } from '@/lib/types'
 import { currencyBRL } from '@/utils/currencyBRL'
 import { monthToString } from '@/utils/monthToString'
-import { translateStatusBRL } from '@/utils/translateStatusBRL'
 import { Circle } from 'lucide-react'
 import { useState } from 'react'
 import { DeleteBox } from '../dialog/DeleteBox'
+import { getStatusColor } from '@/utils/getStatusColor'
+import { SelectStatus } from '../select/Status'
 
 interface Props {
   data: Transaction[]
@@ -106,12 +107,14 @@ export function GridTransactions({ data, itemsPerPage }: Props) {
           </thead>
           <tbody>
             {currentItems.map((row) => (
-              <tr key={row.id}>
+              <tr key={row.id} className={`${getStatusColor(row.status)}`}>
                 <td>{row.description}</td>
                 <td>{currencyBRL(row.amount)}</td>
                 <td>{monthToString(row.month)}</td>
                 <td>{row.year}</td>
-                <td>{translateStatusBRL(row.status)}</td>
+                <td>
+                  <SelectStatus transaction={row} />
+                </td>
                 <td>{row.category.description}</td>
                 <td className="flex items-center justify-evenly">
                   <DeleteBox
