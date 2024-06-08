@@ -71,12 +71,12 @@ export function Dashboard({ data }: { data: Transaction[] }) {
       {
         label: 'Receitas',
         data: incomesData,
-        backgroundColor: '#36A2EB',
+        backgroundColor: '#16a34a',
       },
       {
         label: 'Despesas',
         data: expensesData,
-        backgroundColor: '#FF6384',
+        backgroundColor: '#d97706',
       },
     ],
   }
