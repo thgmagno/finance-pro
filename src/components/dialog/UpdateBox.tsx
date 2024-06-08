@@ -9,6 +9,7 @@ import React, { useState } from 'react'
 import { ButtonFormSubmit } from '../button/FormSubmit'
 import { InputCurrencyBRL } from '../input/Currency'
 import { useFormState } from 'react-dom'
+import { translateStatusBRL } from '@/utils/translateStatusBRL'
 
 interface Props {
   transaction: Transaction
@@ -40,11 +41,22 @@ export function UpdateBox({ transaction }: Props) {
                 className="cursor-pointer self-end"
               />
               <form action={action} className="mt-3 flex flex-col gap-3">
-                <h1>Editar o valor do lançamento</h1>
-                <p>
+                <h1 className="text-slate-200">Editar o valor do lançamento</h1>
+
+                <div className="flex flex-col">
+                  <span className="truncate">{transaction.description}</span>
+                  <span>
+                    {monthToString(transaction.month)}/
+                    {transaction.year.toString().slice(2)}
+                  </span>
+                  <span>{currencyBRL(transaction.amount)}</span>
+                  <span>{translateStatusBRL(transaction.status)}</span>
+                </div>
+
+                {/* <p className="text-slate-200">
                   {transaction.description} - {monthToString(transaction.month)}
                   /{transaction.year} - <b>{currencyBRL(transaction.amount)}</b>
-                </p>
+                </p> */}
 
                 <input
                   type="hidden"

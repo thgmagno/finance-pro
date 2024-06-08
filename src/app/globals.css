@@ -12,7 +12,7 @@
   }
 
   table th {
-    @apply min-w-40 h-8 md:h-10 truncate
+    @apply h-8 md:h-10 truncate
   }
 
   table td {

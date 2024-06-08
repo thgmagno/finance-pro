@@ -27,7 +27,7 @@ export function SelectStatus({ transaction }: Props) {
     <select
       onChange={handleChange}
       defaultValue={transaction.status}
-      className="bg-transparent"
+      className="rounded-md border border-slate-600 bg-transparent px-1"
     >
       <option value="OK" className="bg-slate-700 text-slate-100">
         Baixado

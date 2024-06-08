@@ -101,13 +101,13 @@ export function GridTransactions({ data }: Props) {
         <table className="w-full border-b-2">
           <thead>
             <tr>
-              <th>Descrição</th>
-              <th>Valor</th>
-              <th>Mês</th>
-              <th>Ano</th>
-              <th>Status</th>
-              <th>Categoria</th>
-              <th>Ações</th>
+              <th className="min-w-40">Descrição</th>
+              <th className="min-w-40">Valor</th>
+              <th className="min-w-20">Mês</th>
+              <th className="min-w-20">Ano</th>
+              <th className="min-w-40">Status</th>
+              <th className="min-w-40">Categoria</th>
+              <th className="min-w-40">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -147,7 +147,7 @@ export function GridTransactions({ data }: Props) {
           Nada foi encontrado. Verifique os critérios de busca.
         </span>
       )}
-      <div className="mb-20 flex flex-col items-baseline justify-center gap-2 py-2 md:justify-between">
+      <div className="mb-20 grid grid-cols-2 items-baseline justify-center gap-2 py-2 md:flex md:flex-row md:justify-between">
         <div className="flex items-center gap-2">
           <span className="text-sm">Mostrar</span>
           <select
@@ -170,10 +170,10 @@ export function GridTransactions({ data }: Props) {
           </select>
           <span className="text-sm">por página</span>
         </div>
-        <span className="text-sm">
+        <span className="ml-auto text-sm md:m-0">
           Página {currentPage} de {totalPages}
         </span>
-        <div className="space-x-3">
+        <div className="col-span-2 flex justify-center space-x-3">
           <button
             onClick={prevPage}
             disabled={currentPage === 1}
