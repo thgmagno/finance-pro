@@ -65,6 +65,7 @@ export function Details({ data }: { data: Transaction[] }) {
   }
 
   const reset = () => setSelectedDate(initialState)
+
   const isCurrentDate =
     initialState.month === selectedDate.month &&
     initialState.year === selectedDate.year
@@ -75,6 +76,8 @@ export function Details({ data }: { data: Transaction[] }) {
       const total = data
         .filter(
           (transaction) =>
+            transaction.month <= currentDate.getMonth() &&
+            transaction.year <= currentDate.getFullYear() &&
             transaction.month === dt.month &&
             transaction.year === dt.year &&
             transaction.type === 'EXPENSE',
@@ -84,6 +87,8 @@ export function Details({ data }: { data: Transaction[] }) {
       const paid = data
         .filter(
           (transaction) =>
+            transaction.month <= currentDate.getMonth() &&
+            transaction.year <= currentDate.getFullYear() &&
             transaction.month === dt.month &&
             transaction.year === dt.year &&
             transaction.type === 'EXPENSE' &&
@@ -102,27 +107,29 @@ export function Details({ data }: { data: Transaction[] }) {
 
   return (
     <div className="mb-5 rounded-lg bg-slate-200 p-2.5 shadow-md md:mx-auto md:max-h-[290px] md:max-w-[580px] md:p-6 lg:max-h-[360px] lg:max-w-[720px]">
-      <section className="flex flex-col items-center justify-center text-zinc-500">
-        <h1>Atenção, pendência(s) em:</h1>
-        <span className="flex flex-wrap gap-1 text-sm">
-          {monthsPending.map((month) => (
-            <b
-              className="cursor-pointer rounded-md border border-slate-400 px-1 hover:bg-slate-400 hover:text-slate-100"
-              onClick={() =>
-                setSelectedDate({
-                  month: monthsArray.indexOf(month.split('/')[0]),
-                  year: parseInt(month.split('/')[1]),
-                })
-              }
-            >
-              {month
-                .slice(0, 3)
-                .concat('/')
-                .concat(month.split('/')[1].slice(2))}
-            </b>
-          ))}
-        </span>
-      </section>
+      {monthsPending.length > 0 && (
+        <section className="flex flex-col items-center justify-center text-zinc-500">
+          <h1>Atenção, pendência(s) em:</h1>
+          <span className="flex flex-wrap gap-1 text-sm">
+            {monthsPending.map((month) => (
+              <b
+                className="cursor-pointer rounded-md border border-slate-400 px-1 hover:bg-slate-400 hover:text-slate-100"
+                onClick={() =>
+                  setSelectedDate({
+                    month: monthsArray.indexOf(month.split('/')[0]),
+                    year: parseInt(month.split('/')[1]),
+                  })
+                }
+              >
+                {month
+                  .slice(0, 3)
+                  .concat('/')
+                  .concat(month.split('/')[1].slice(2))}
+              </b>
+            ))}
+          </span>
+        </section>
+      )}
       <div className="my-2.5 flex flex-col text-slate-900">
         <section className="my-1.5 flex justify-between border-b border-t border-slate-300 py-2">
           <ArrowLeftCircle
