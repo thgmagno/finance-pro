@@ -32,7 +32,6 @@ type AggregatedData = {
 export function BarChart({ data }: { data: Transaction[] }) {
   const aggregatedData = data.reduce((acc: AggregatedData, transaction) => {
     const { month, year, amount, type, status } = transaction
-    // const key = `${monthToString(month).slice(0, 3)}/${year.toString().slice(2)}`
     const key = `${year}-${month}`
 
     if (!acc[key]) {

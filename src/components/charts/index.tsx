@@ -1,6 +1,7 @@
 import { Transaction } from '@/lib/types'
 import { BarChart } from './BarChart'
 import { ChartWrapper } from './Wrapper'
+import { Details } from './Details'
 
 export function Charts({ data }: { data: Transaction[] }) {
   return (
@@ -8,6 +9,7 @@ export function Charts({ data }: { data: Transaction[] }) {
       <ChartWrapper title="Receitas x Despesas">
         <BarChart data={data} />
       </ChartWrapper>
+      <Details data={data} />
     </div>
   )
 }

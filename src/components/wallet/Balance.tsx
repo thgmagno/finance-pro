@@ -14,7 +14,9 @@ export function Balance({ data }: { data: Transaction[] }) {
 
   return (
     <section>
-      <h1 className="mt-3 px-5 text-end">Saldo: {currencyBRL(balance)}</h1>
+      <h1 className="mt-3 px-5 text-end text-zinc-300">
+        Saldo: {currencyBRL(balance)}
+      </h1>
     </section>
   )
 }

@@ -4,22 +4,13 @@ import { Filter, Transaction } from '@/lib/types'
 import { monthToString } from '@/utils/monthToString'
 import { RefreshCcw, Search } from 'lucide-react'
 
-const date = new Date()
-const currentMonth = date.getMonth()
-const currentYear = date.getFullYear()
-
 interface Props {
   data: Transaction[]
   filters: Filter
   setFilters: (filter: Filter) => void
   setCurrentPage: (value: number) => void
-}
-
-export const initialState = {
-  month: currentMonth.toString(),
-  year: currentYear.toString(),
-  searchTerm: '',
-  status: '',
+  clearFilters: () => void
+  isEqual: boolean
 }
 
 export function GridFilters({
@@ -27,6 +18,8 @@ export function GridFilters({
   filters,
   setFilters,
   setCurrentPage,
+  clearFilters,
+  isEqual,
 }: Props) {
   const extractDataMonths = Array.from(
     new Set(data.map((item) => item.month)),
@@ -68,10 +61,6 @@ export function GridFilters({
       searchTerm: event.target.value,
     })
   }
-
-  const clearFilters = () => setFilters(initialState)
-
-  const isEqual = JSON.stringify(filters) === JSON.stringify(initialState)
 
   return (
     <div className="relative flex flex-col gap-3 md:flex-row md:items-center">

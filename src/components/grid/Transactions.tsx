@@ -8,15 +8,26 @@ import { useState } from 'react'
 import { DeleteBox } from '../dialog/DeleteBox'
 import { getStatusColor } from '@/utils/getStatusColor'
 import { SelectStatus } from '../select/Status'
-import { GridFilters, initialState } from './Filters'
+import { GridFilters } from './Filters'
 import { normalizeString } from '@/utils/normalizeString'
 import { UpdateBox } from '../dialog/UpdateBox'
+import { useSearchParams } from 'next/navigation'
 
 interface Props {
   data: Transaction[]
 }
 
 export function GridTransactions({ data }: Props) {
+  const searchParams = useSearchParams()
+  const currentDate = new Date()
+
+  const initialState = {
+    month: searchParams.get('mes') || currentDate.getMonth().toString(),
+    year: searchParams.get('ano') || currentDate.getFullYear().toString(),
+    searchTerm: searchParams.get('categoria') || '',
+    status: '',
+  }
+
   const [filters, setFilters] = useState(initialState)
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
@@ -63,6 +74,10 @@ export function GridTransactions({ data }: Props) {
     setCurrentPage((prevPage) => prevPage - 1)
   }
 
+  const clearFilters = () => setFilters(initialState)
+
+  const isEqual = JSON.stringify(filters) === JSON.stringify(initialState)
+
   const handleSelectTransaction = (transaction: Transaction) => {
     setSelectedTransactions((prevSelected) => {
       const alreadySelected = prevSelected.find((t) => t.id === transaction.id)
@@ -87,6 +102,8 @@ export function GridTransactions({ data }: Props) {
           filters={filters}
           setFilters={setFilters}
           setCurrentPage={setCurrentPage}
+          clearFilters={clearFilters}
+          isEqual={isEqual}
         />
 
         {/* Total */}
