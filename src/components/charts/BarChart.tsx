@@ -29,7 +29,7 @@ type AggregatedData = {
   }
 }
 
-export function Dashboard({ data }: { data: Transaction[] }) {
+export function BarChart({ data }: { data: Transaction[] }) {
   const aggregatedData = data.reduce((acc: AggregatedData, transaction) => {
     const { month, year, amount, type, status } = transaction
     // const key = `${monthToString(month).slice(0, 3)}/${year.toString().slice(2)}`
@@ -81,9 +81,5 @@ export function Dashboard({ data }: { data: Transaction[] }) {
     ],
   }
 
-  return (
-    <div className="my-5 max-w-lg rounded-lg border border-slate-400 bg-zinc-300 p-5 shadow-md">
-      <Bar data={chartData} />
-    </div>
-  )
+  return <Bar data={chartData} />
 }

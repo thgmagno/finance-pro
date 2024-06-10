@@ -1,5 +1,6 @@
 import { actions } from '@/actions'
-import { Dashboard } from '@/components/dashboard'
+import { Charts } from '@/components/charts'
+import { Balance } from '@/components/wallet/Balance'
 import { useSession } from '@/hooks/useSession'
 
 export default async function Home() {
@@ -10,7 +11,8 @@ export default async function Home() {
   return (
     <>
       <h1 className="title">Finance Pro</h1>
-      <Dashboard data={data} />
+      <Balance data={data} />
+      <Charts data={data} />
     </>
   )
 }
