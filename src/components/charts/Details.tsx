@@ -103,10 +103,10 @@ export function Details({ data }: { data: Transaction[] }) {
       return acc
     }, [])
     setMonthsPending(pendingMonths)
-  }, [data])
+  }, [data, selectedDate])
 
   return (
-    <div className="mb-5 rounded-lg bg-slate-200 p-2.5 shadow-md md:mx-auto md:max-h-[290px] md:max-w-[580px] md:p-6 lg:max-h-[360px] lg:max-w-[720px]">
+    <div className="mb-5 rounded-lg bg-slate-200 p-2.5 shadow-md md:mx-auto md:max-w-[580px] md:p-6 lg:max-w-[720px]">
       {monthsPending.length > 0 && (
         <section className="flex flex-col items-center justify-center text-zinc-500">
           <h1>Atenção, pendência(s) em:</h1>
@@ -154,7 +154,7 @@ export function Details({ data }: { data: Transaction[] }) {
           />
         </section>
         <div className="no-scrollbar h-56 max-h-60 overflow-scroll rounded pb-5">
-          <table className="no-scrollbar overflow-x-scroll overflow-y-scroll border">
+          <table>
             <thead>
               <tr>
                 <th className="min-w-44">Descrição</th>
@@ -173,7 +173,8 @@ export function Details({ data }: { data: Transaction[] }) {
                     {((totals[category] / totalExpenses) * 100).toFixed(2)}%
                   </td>
                   <td>
-                    {paidTotals[category] < totals[category] ? (
+                    {!Object.keys(paidTotals).length ||
+                    paidTotals[category] < totals[category] ? (
                       <span className="font-medium text-amber-600">
                         pendente
                       </span>
