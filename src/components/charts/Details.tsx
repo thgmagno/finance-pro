@@ -76,7 +76,7 @@ export function Details({ data }: { data: Transaction[] }) {
       const total = data
         .filter(
           (transaction) =>
-            transaction.month <= currentDate.getMonth() &&
+            transaction.month < currentDate.getMonth() &&
             transaction.year <= currentDate.getFullYear() &&
             transaction.month === dt.month &&
             transaction.year === dt.year &&
@@ -87,7 +87,7 @@ export function Details({ data }: { data: Transaction[] }) {
       const paid = data
         .filter(
           (transaction) =>
-            transaction.month <= currentDate.getMonth() &&
+            transaction.month < currentDate.getMonth() &&
             transaction.year <= currentDate.getFullYear() &&
             transaction.month === dt.month &&
             transaction.year === dt.year &&
