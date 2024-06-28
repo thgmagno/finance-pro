@@ -153,7 +153,7 @@ export function Details({ data }: { data: Transaction[] }) {
             className="cursor-pointer opacity-70"
           />
         </section>
-        <div className="no-scrollbar h-72 overflow-scroll rounded pb-5">
+        <div className="no-scrollbar h-96 overflow-scroll rounded pb-5">
           <table>
             <thead>
               <tr>
