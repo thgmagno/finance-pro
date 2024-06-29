@@ -157,7 +157,7 @@ export function Details({ data }: { data: Transaction[] }) {
           <table>
             <thead>
               <tr>
-                <th className="min-w-44">Descrição</th>
+                <th className="min-w-44">Categoria</th>
                 <th className="min-w-44">Montante total</th>
                 <th className="min-w-44">Percentual total</th>
                 <th className="min-w-44">Situação</th>
