@@ -179,7 +179,7 @@ export function Details({ data }: { data: Transaction[] }) {
                         pendente
                       </span>
                     ) : (
-                      <span className="text-green-600">liquidado</span>
+                      <span className="text-green-600">baixado</span>
                     )}
                   </td>
                   <td>
