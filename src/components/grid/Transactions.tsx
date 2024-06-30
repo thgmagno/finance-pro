@@ -20,10 +20,12 @@ interface Props {
 export function GridTransactions({ data }: Props) {
   const searchParams = useSearchParams()
   const currentDate = new Date()
+  const currentMonth = currentDate.getMonth()
+  const currentYear = currentDate.getFullYear()
 
   const initialState = {
-    month: searchParams.get('mes') || currentDate.getMonth().toString(),
-    year: searchParams.get('ano') || currentDate.getFullYear().toString(),
+    month: searchParams.get('mes') || currentMonth.toString(),
+    year: searchParams.get('ano') || currentYear.toString(),
     searchTerm: searchParams.get('categoria') || '',
     status: '',
   }
@@ -38,7 +40,13 @@ export function GridTransactions({ data }: Props) {
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
 
-  const overdues = data.filter((item) => item.status === 'OVERDUE')
+  const overdues = data.filter(
+    (item) =>
+      item.month < Number(filters.month) &&
+      item.year <= Number(filters.year) &&
+      item.status === 'OVERDUE',
+  )
+
   const filteredData = data.filter((item) => {
     const matchesMonth = filters.month
       ? item.month === parseInt(filters.month)
