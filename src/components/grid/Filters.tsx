@@ -1,146 +1,118 @@
 'use client'
 
-import { Filter, Transaction } from '@/lib/types'
 import { monthToString } from '@/utils/monthToString'
-import { RefreshCcw, Search } from 'lucide-react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 
 interface Props {
-  data: Transaction[]
-  filters: Filter
-  setFilters: (filter: Filter) => void
-  setCurrentPage: (value: number) => void
-  clearFilters: () => void
-  isEqual: boolean
+  months: number[]
+  years: number[]
+  categories: string[]
 }
 
-export function GridFilters({
-  data,
-  filters,
-  setFilters,
-  setCurrentPage,
-  clearFilters,
-  isEqual,
-}: Props) {
-  const extractDataMonths = Array.from(
-    new Set(data.map((item) => item.month)),
-  ).reverse()
+export function GridFilters({ months, years, categories }: Props) {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const { replace } = useRouter()
+  const date = new Date()
+  const currentMonth = date.getMonth()
+  const currentYear = date.getFullYear()
 
-  const extractDataYears = Array.from(
-    new Set(data.map((item) => item.year)),
-  ).reverse()
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams)
 
-  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilters({
-      ...filters,
-      month: event.target.value,
-    })
-    setCurrentPage(1)
+    params.set('mes', String(currentMonth + 1))
+    params.set('ano', currentYear.toString())
+    replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }, [])
+
+  function handleMonthChange(month: string) {
+    const params = new URLSearchParams(searchParams)
+
+    if (month) {
+      params.set('mes', String(Number(month) + 1))
+    } else {
+      params.delete('mes')
+    }
+
+    replace(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
-  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilters({
-      ...filters,
-      year: event.target.value,
-    })
-    setCurrentPage(1)
+  function handleYearChange(year: string) {
+    const params = new URLSearchParams(searchParams)
+
+    if (year) {
+      params.set('ano', String(Number(year)))
+    } else {
+      params.delete('ano')
+    }
+
+    replace(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilters({
-      ...filters,
-      status: event.target.value,
-    })
-    setCurrentPage(1)
-  }
+  function handleCategoryChange(category: string) {
+    const params = new URLSearchParams(searchParams)
 
-  const handleSearchTermChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setFilters({
-      ...filters,
-      searchTerm: event.target.value,
-    })
+    if (category) {
+      params.set('categoria', category)
+    } else {
+      params.delete('categoria')
+    }
+
+    replace(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
   return (
-    <div className="relative flex flex-col gap-3 md:flex-row md:items-center">
-      <span>Filtrar:</span>
-
+    <div className="relative my-5 flex flex-col gap-3 md:flex-row md:items-center">
       {/* Meses */}
+      <label>Mês:</label>
       <select
-        value={filters.month}
-        onChange={handleMonthChange}
+        onChange={(e) => handleMonthChange(e.target.value)}
+        defaultValue={currentMonth}
         className="h-8 rounded-md bg-slate-800 p-1.5"
         aria-label="Selecionar mês"
         title="Selecionar mês"
       >
         <option value="">Todos</option>
-        {extractDataMonths.map((month) => (
-          <option key={month} value={month.toString()}>
+        {months.map((month) => (
+          <option key={month} value={month}>
             {monthToString(month)}
           </option>
         ))}
       </select>
 
       {/* Anos */}
+      <label>Ano:</label>
       <select
-        value={filters.year}
-        onChange={handleYearChange}
+        onChange={(e) => handleYearChange(e.target.value)}
+        defaultValue={currentYear}
         className="h-8 rounded-md bg-slate-800 p-1.5"
         aria-label="Selecionar ano"
         title="Selecionar ano"
       >
-        {extractDataYears.map((year) => (
-          <option key={year} value={year.toString()}>
+        <option value="">Todos</option>
+        {years.map((year) => (
+          <option key={year} value={year}>
             {year}
           </option>
         ))}
       </select>
 
-      {/* Status */}
+      {/* Anos */}
+      <label>Categorias:</label>
       <select
-        value={filters.status}
-        onChange={handleStatusChange}
+        onChange={(e) => handleCategoryChange(e.target.value)}
         className="h-8 rounded-md bg-slate-800 p-1.5"
-        aria-label="Selecionar status"
-        title="Selecionar status"
+        aria-label="Selecionar ano"
+        title="Selecionar ano"
       >
-        <option value="">Status</option>
-        <option value="OK">Baixado</option>
-        <option value="PENDING">Pendente</option>
-        <option value="OVERDUE">Atrasado</option>
+        <option value="">Todos</option>
+        {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
       </select>
-
-      {/* Termo */}
-      <div
-        className="relative flex h-8 rounded-md bg-slate-800 p-1.5"
-        aria-label="Buscar palavra chave"
-        title="Buscar palavra chave"
-      >
-        <input
-          type="text"
-          value={filters.searchTerm}
-          onChange={handleSearchTermChange}
-          className="bg-transparent outline-none"
-          placeholder="Pesquisar"
-        />
-        <Search className="absolute right-1" size={20} />
-      </div>
-
-      {/* Limpar */}
-      {!isEqual && (
-        <div
-          title="Redefinir filtros"
-          className="absolute right-0 top-0 cursor-pointer md:relative"
-        >
-          <RefreshCcw
-            onClick={clearFilters}
-            size={20}
-            className="opacity-60"
-            aria-label="Redefinir filtros"
-          />
-        </div>
-      )}
     </div>
   )
 }

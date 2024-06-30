@@ -1,6 +1,6 @@
 'use server'
 
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 import { CategorySchema } from '@/lib/schemas'
 import { CategoryFormState } from '@/lib/states'
 import { revalidatePath } from 'next/cache'

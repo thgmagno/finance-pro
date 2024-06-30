@@ -7,8 +7,8 @@ import { cookies } from 'next/headers'
 import { CreateAccountFormState, LoginFormState } from '@/lib/states'
 import { CreateAccountSchema, LoginSchema } from '@/lib/schemas'
 import { redirect } from 'next/navigation'
-import { prisma } from '@/lib/prisma'
 import * as bcrypt from 'bcrypt'
+import prisma from '@/lib/prisma'
 
 export async function login(
   formState: LoginFormState,

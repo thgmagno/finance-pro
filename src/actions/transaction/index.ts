@@ -1,6 +1,6 @@
 'use server'
 
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 import { TransactionSchema, UpdateTransactionSchema } from '@/lib/schemas'
 import { TransactionFormState, UpdateTransactionFormState } from '@/lib/states'
 import { StatusTransaction, Transaction } from '@/lib/types'
@@ -72,6 +72,63 @@ export async function findMany(userId: number) {
     include: { category: { select: { description: true } } },
     orderBy: [{ month: 'desc' }, { year: 'desc' }, { description: 'asc' }],
   })
+}
+
+export async function findTransactions(
+  userId: number,
+  month?: string,
+  year?: string,
+) {
+  const currentDate = new Date()
+  const currentMonth = currentDate.getMonth()
+  const currentYear = currentDate.getFullYear()
+
+  const [transactions, arrMonths, arrYears, arrCategories] = await Promise.all([
+    prisma.transaction.findMany({
+      where: {
+        OR: [
+          {
+            userId,
+            ...(month && { month: Number(month) - 1 }),
+            ...(year && { year: Number(year) }),
+          },
+          {
+            userId,
+            month: { lte: currentMonth },
+            year: { lte: currentYear },
+            status: 'OVERDUE',
+          },
+        ],
+      },
+      include: { category: { select: { description: true } } },
+      orderBy: [{ year: 'asc' }, { month: 'asc' }, { description: 'asc' }],
+    }),
+    prisma.transaction.groupBy({
+      by: ['month'],
+      where: { userId },
+      orderBy: { month: 'asc' },
+    }),
+    prisma.transaction.groupBy({
+      by: ['year'],
+      where: { userId },
+      orderBy: { year: 'asc' },
+    }),
+    prisma.category.findMany({
+      where: { Transaction: { some: { userId } } },
+      select: { description: true },
+    }),
+  ])
+
+  const response = {
+    data: transactions,
+    metadata: {
+      months: arrMonths.map((item) => item.month),
+      years: arrYears.map((item) => item.year),
+      categories: arrCategories.map((item) => item.description),
+    },
+  }
+
+  return response
 }
 
 export async function deleteMany(transactions: Transaction[]) {
