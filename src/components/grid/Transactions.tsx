@@ -55,7 +55,7 @@ export function GridTransactions({ data }: Props) {
         )
       : true
 
-    const overdues = item.status === ‘pending’
+    const overdues = item.status === 'pending'
     return matchesMonth && matchesYear && matchesStatus && matchesSearchTerm && overdues
   })
 
