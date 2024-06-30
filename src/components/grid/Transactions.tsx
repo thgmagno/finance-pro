@@ -38,6 +38,7 @@ export function GridTransactions({ data }: Props) {
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
 
+  const overdues = data.filter((item) => item.status === 'OVERDUE')
   const filteredData = data.filter((item) => {
     const matchesMonth = filters.month
       ? item.month === parseInt(filters.month)
@@ -54,22 +55,19 @@ export function GridTransactions({ data }: Props) {
           normalizeString(filters.searchTerm),
         )
       : true
-    const overdues = item.status === 'PENDING'
 
-    return (
-      matchesMonth &&
-      matchesYear &&
-      matchesStatus &&
-      matchesSearchTerm &&
-      overdues
-    )
+    return matchesMonth && matchesYear && matchesStatus && matchesSearchTerm
   })
 
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
+  const mergedData = [...filteredData, ...overdues].filter(
+    (item, index, self) => index === self.findIndex((t) => t.id === item.id),
+  )
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage)
+  const currentItems = mergedData.slice(indexOfFirstItem, indexOfLastItem)
 
-  const totalAmount = filteredData.reduce(
+  const totalPages = Math.ceil(mergedData.length / itemsPerPage)
+
+  const totalAmount = mergedData.reduce(
     (acc, transaction) => acc + transaction.amount,
     0,
   )
