@@ -54,7 +54,9 @@ export function GridTransactions({ data }: Props) {
           normalizeString(filters.searchTerm),
         )
       : true
-    return matchesMonth && matchesYear && matchesStatus && matchesSearchTerm
+
+    const overdues = item.status === ‘pending’
+    return matchesMonth && matchesYear && matchesStatus && matchesSearchTerm && overdues
   })
 
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
