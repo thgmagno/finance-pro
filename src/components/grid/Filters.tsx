@@ -121,11 +121,13 @@ export function GridFilters({ months, years, categories }: Props) {
       </select>
 
       {searchParams.size >= 1 && (
-        <RefreshCcw
+        <button
           onClick={resetFilters}
-          size={20}
-          className="cursor-pointer"
-        />
+          className="flex h-8 w-full items-center justify-center gap-2 rounded-lg border border-neutral-500 text-neutral-300 md:w-10"
+        >
+          <RefreshCcw size={20} />
+          <span className="md:hidden">Redefinir filtros</span>
+        </button>
       )}
     </div>
   )
