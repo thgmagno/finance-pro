@@ -9,47 +9,60 @@ import { currencyBRL } from '@/utils/currencyBRL'
 export default async function Expense({
   searchParams,
 }: {
-  searchParams: { mes: string; ano: string; categoria: string }
+  searchParams: { mes: string; ano: string; categoria: string; status: string }
 }) {
   const { id } = await useSession()
 
-  const [response, categories] = await Promise.all([
-    actions.transaction.findTransactions(
-      parseInt(id),
-      searchParams.mes,
-      searchParams.ano,
-    ),
-    actions.category.findMany(parseInt(id)),
-  ])
+  const response = await actions.transaction.findTransactions(
+    parseInt(id),
+    searchParams.mes,
+    searchParams.ano,
+  )
 
   const extractExpenses = response?.data.filter(
     (item) => item.type === 'EXPENSE',
   )
 
-  const filtered = searchParams.categoria
-    ? extractExpenses.filter(
-        (item) => item.category.description === searchParams.categoria,
-      )
-    : extractExpenses
+  const extractCategoryExpenses = response.metadata.categories.filter(
+    (item) => item.type === 'EXPENSE',
+  )
 
-  const totalAmount = filtered.reduce((acc, item) => acc + item.amount, 0)
+  const filteredExpenses = extractExpenses.filter((item) => {
+    const matchesCategory = searchParams.categoria
+      ? item.category.description === searchParams.categoria
+      : true
+
+    const matchesStatus =
+      searchParams.status === 'pendentes'
+        ? item.status === 'OVERDUE' || item.status === 'PENDING'
+        : searchParams.status === 'baixados'
+          ? item.status === 'OK'
+          : true
+
+    return matchesCategory && matchesStatus
+  })
+
+  const totalAmount = filteredExpenses.reduce(
+    (acc, item) => acc + item.amount,
+    0,
+  )
 
   return (
     <>
-      <NewTransactionFormBtn userId={id} categories={categories} />
+      <NewTransactionFormBtn userId={id} categories={extractCategoryExpenses} />
       <h1 className="title">Despesa</h1>
       <GridFilters
         months={response.metadata.months}
         years={response.metadata.years}
-        categories={response.metadata.categories}
+        categories={extractCategoryExpenses}
       />
       <div className="my-3 flex justify-end md:mt-0">
         <span>
           Total: <b>{currencyBRL(totalAmount)}</b>
         </span>
       </div>
-      {filtered.length > 0 ? (
-        <GridTransactions data={filtered} />
+      {filteredExpenses.length > 0 ? (
+        <GridTransactions data={filteredExpenses} />
       ) : (
         <GridEmpty />
       )}

@@ -1,13 +1,14 @@
 'use client'
 
 import { monthToString } from '@/utils/monthToString'
+import { Category } from '@prisma/client'
 import { RefreshCcw } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 interface Props {
   months: number[]
   years: number[]
-  categories: string[]
+  categories: Category[]
 }
 
 export function GridFilters({ months, years, categories }: Props) {
@@ -58,6 +59,18 @@ export function GridFilters({ months, years, categories }: Props) {
     replace(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
+  function handleStatusChange(status: string) {
+    const params = new URLSearchParams(searchParams)
+
+    if (status) {
+      params.set('status', status)
+    } else {
+      params.delete('status')
+    }
+
+    replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
   function resetFilters() {
     refresh()
     replace(pathname, { scroll: false })
@@ -74,7 +87,7 @@ export function GridFilters({ months, years, categories }: Props) {
             ? Number(searchParams.get('mes')) - 1
             : currentMonth
         }
-        className="h-8 rounded-md bg-slate-800 p-1.5"
+        className="h-8 cursor-pointer rounded-md bg-slate-800 p-1.5"
         aria-label="Selecionar mês"
         title="Selecionar mês"
       >
@@ -91,7 +104,7 @@ export function GridFilters({ months, years, categories }: Props) {
       <select
         onChange={(e) => handleYearChange(e.target.value)}
         value={Number(searchParams.get('ano')) || currentYear}
-        className="h-8 rounded-md bg-slate-800 p-1.5"
+        className="h-8 cursor-pointer rounded-md bg-slate-800 p-1.5"
         aria-label="Selecionar ano"
         title="Selecionar ano"
       >
@@ -103,21 +116,34 @@ export function GridFilters({ months, years, categories }: Props) {
         ))}
       </select>
 
-      {/* Anos */}
+      {/* Categorias */}
       <label>Categorias:</label>
       <select
         onChange={(e) => handleCategoryChange(e.target.value)}
         value={searchParams.get('categoria') || ''}
-        className="h-8 rounded-md bg-slate-800 p-1.5"
+        className="h-8 cursor-pointer rounded-md bg-slate-800 p-1.5"
         aria-label="Selecionar ano"
         title="Selecionar ano"
       >
         <option value="">Todos</option>
         {categories.map((category) => (
-          <option key={category} value={category}>
-            {category}
+          <option key={category.description} value={category.description}>
+            {category.description}
           </option>
         ))}
+      </select>
+
+      {/* Status */}
+      <label>Status:</label>
+      <select
+        onChange={(e) => handleStatusChange(e.target.value)}
+        value={searchParams.get('status') || ''}
+        className="h-8 cursor-pointer rounded-md bg-slate-800 p-1.5"
+        aria-label="Selecionar status"
+        title="Selecionar status"
+      >
+        <option value="">Todos</option>
+        <option value="pendentes">Pendentes</option>
       </select>
 
       {searchParams.size >= 1 && (

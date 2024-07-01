@@ -124,7 +124,6 @@ export async function findTransactions(
     }),
     prisma.category.findMany({
       where: { Transaction: { some: { userId } } },
-      select: { description: true },
     }),
   ])
 
@@ -133,7 +132,7 @@ export async function findTransactions(
     metadata: {
       months: arrMonths.map((item) => item.month),
       years: arrYears.map((item) => item.year),
-      categories: arrCategories.map((item) => item.description),
+      categories: arrCategories,
     },
   }
 
