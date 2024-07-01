@@ -69,7 +69,11 @@ export function GridFilters({ months, years, categories }: Props) {
       <label>Mês:</label>
       <select
         onChange={(e) => handleMonthChange(e.target.value)}
-        defaultValue={currentMonth}
+        value={
+          searchParams.get('mes')
+            ? Number(searchParams.get('mes')) - 1
+            : currentMonth
+        }
         className="h-8 rounded-md bg-slate-800 p-1.5"
         aria-label="Selecionar mês"
         title="Selecionar mês"
@@ -86,7 +90,7 @@ export function GridFilters({ months, years, categories }: Props) {
       <label>Ano:</label>
       <select
         onChange={(e) => handleYearChange(e.target.value)}
-        defaultValue={currentYear}
+        value={Number(searchParams.get('ano')) || currentYear}
         className="h-8 rounded-md bg-slate-800 p-1.5"
         aria-label="Selecionar ano"
         title="Selecionar ano"
@@ -103,6 +107,7 @@ export function GridFilters({ months, years, categories }: Props) {
       <label>Categorias:</label>
       <select
         onChange={(e) => handleCategoryChange(e.target.value)}
+        value={searchParams.get('categoria') || ''}
         className="h-8 rounded-md bg-slate-800 p-1.5"
         aria-label="Selecionar ano"
         title="Selecionar ano"

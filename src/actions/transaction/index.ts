@@ -83,6 +83,9 @@ export async function findTransactions(
   const currentMonth = currentDate.getMonth()
   const currentYear = currentDate.getFullYear()
 
+  const selectedMonth = Number(month) - 1
+  const selectedYear = Number(year)
+
   const [transactions, arrMonths, arrYears, arrCategories] = await Promise.all([
     prisma.transaction.findMany({
       where: {
@@ -91,13 +94,17 @@ export async function findTransactions(
             userId,
             ...(!month && { month: currentMonth }),
             ...(!year && { year: currentYear }),
-            ...(month && month !== 'todos' && { month: Number(month) - 1 }),
-            ...(year && year !== 'todos' && { year: Number(year) }),
+            ...(month && month !== 'todos' && { month: selectedMonth }),
+            ...(year && year !== 'todos' && { year: selectedYear }),
           },
           {
             userId,
-            month: { lte: month ? Number(month) - 1 : currentMonth },
-            year: { lte: year ? Number(year) : currentYear },
+            month: {
+              lte: month && month !== 'todos' ? selectedMonth : currentMonth,
+            },
+            year: {
+              lte: year && year !== 'todos' ? selectedYear : currentYear,
+            },
             status: 'OVERDUE',
           },
         ],
