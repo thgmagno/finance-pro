@@ -89,13 +89,15 @@ export async function findTransactions(
         OR: [
           {
             userId,
-            ...(month && { month: Number(month) - 1 }),
-            ...(year && { year: Number(year) }),
+            ...(!month && { month: currentMonth }),
+            ...(!year && { year: currentYear }),
+            ...(month && month !== 'todos' && { month: Number(month) - 1 }),
+            ...(year && year !== 'todos' && { year: Number(year) }),
           },
           {
             userId,
-            month: { lte: currentMonth },
-            year: { lte: currentYear },
+            month: { lte: month ? Number(month) - 1 : currentMonth },
+            year: { lte: year ? Number(year) : currentYear },
             status: 'OVERDUE',
           },
         ],

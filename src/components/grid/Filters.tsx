@@ -1,8 +1,8 @@
 'use client'
 
 import { monthToString } from '@/utils/monthToString'
+import { RefreshCcw } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
 
 interface Props {
   months: number[]
@@ -13,23 +13,17 @@ interface Props {
 export function GridFilters({ months, years, categories }: Props) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
-  const { replace } = useRouter()
+  const { refresh, replace } = useRouter()
   const date = new Date()
   const currentMonth = date.getMonth()
   const currentYear = date.getFullYear()
 
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams)
-
-    params.set('mes', String(currentMonth + 1))
-    params.set('ano', currentYear.toString())
-    replace(`${pathname}?${params.toString()}`, { scroll: false })
-  }, [])
-
   function handleMonthChange(month: string) {
     const params = new URLSearchParams(searchParams)
 
-    if (month) {
+    if (month && isNaN(Number(month))) {
+      params.set('mes', 'todos')
+    } else if (month && Number(month) !== currentMonth) {
       params.set('mes', String(Number(month) + 1))
     } else {
       params.delete('mes')
@@ -41,7 +35,9 @@ export function GridFilters({ months, years, categories }: Props) {
   function handleYearChange(year: string) {
     const params = new URLSearchParams(searchParams)
 
-    if (year) {
+    if (year && isNaN(Number(year))) {
+      params.set('ano', 'todos')
+    } else if (year && Number(year) !== currentYear) {
       params.set('ano', String(Number(year)))
     } else {
       params.delete('ano')
@@ -62,8 +58,13 @@ export function GridFilters({ months, years, categories }: Props) {
     replace(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
+  function resetFilters() {
+    refresh()
+    replace(pathname, { scroll: false })
+  }
+
   return (
-    <div className="relative my-5 flex flex-col gap-3 md:flex-row md:items-center">
+    <div className="relative mt-5 flex flex-col gap-3 md:flex-row md:items-center">
       {/* Meses */}
       <label>Mês:</label>
       <select
@@ -73,7 +74,7 @@ export function GridFilters({ months, years, categories }: Props) {
         aria-label="Selecionar mês"
         title="Selecionar mês"
       >
-        <option value="">Todos</option>
+        <option value="todos">Todos</option>
         {months.map((month) => (
           <option key={month} value={month}>
             {monthToString(month)}
@@ -90,7 +91,7 @@ export function GridFilters({ months, years, categories }: Props) {
         aria-label="Selecionar ano"
         title="Selecionar ano"
       >
-        <option value="">Todos</option>
+        <option value="todos">Todos</option>
         {years.map((year) => (
           <option key={year} value={year}>
             {year}
@@ -113,6 +114,14 @@ export function GridFilters({ months, years, categories }: Props) {
           </option>
         ))}
       </select>
+
+      {searchParams.size >= 1 && (
+        <RefreshCcw
+          onClick={resetFilters}
+          size={20}
+          className="cursor-pointer"
+        />
+      )}
     </div>
   )
 }
