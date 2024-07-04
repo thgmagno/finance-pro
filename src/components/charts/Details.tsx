@@ -187,7 +187,7 @@ export function Details({ data }: { data: Transaction[] }) {
                       href={{
                         pathname: '/despesa',
                         query: {
-                          mes: selectedDate.month,
+                          mes: selectedDate.month + 1,
                           ano: selectedDate.year,
                           categoria: category,
                         },
