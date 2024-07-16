@@ -23,9 +23,9 @@ export default async function Expense({
     (item) => item.type === 'EXPENSE',
   )
 
-  const extractCategoryExpenses = response.metadata.categories.filter(
-    (item) => item.type === 'EXPENSE',
-  )
+  const extractCategoryExpenses = await actions.category
+    .findMany(Number(id))
+    .then((data) => data.filter((dt) => dt.type === 'EXPENSE'))
 
   const filteredExpenses = extractExpenses.filter((item) => {
     const matchesCategory = searchParams.categoria
