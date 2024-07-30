@@ -2,9 +2,15 @@
 
 import prisma from '@/lib/prisma'
 import { TransactionSchema, UpdateTransactionSchema } from '@/lib/schemas'
-import { TransactionFormState, UpdateTransactionFormState } from '@/lib/states'
+import {
+  TransactionFormState,
+  UpdateManyTransactionFormState,
+  UpdateTransactionFormState,
+} from '@/lib/states'
 import { StatusTransaction, Transaction } from '@/lib/types'
+import { $Enums } from '@prisma/client'
 import { randomUUID } from 'crypto'
+import { errors } from 'jose'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -188,6 +194,32 @@ export async function update(
   } catch (err) {
     if (err instanceof Error) {
       return { success: false, errors: { _form: 'Ocorreu um erro ao salvar' } }
+    }
+  }
+
+  revalidatePath('/')
+  return { success: true, errors: {} }
+}
+
+export async function updateMany(
+  formState: UpdateManyTransactionFormState,
+  formData: FormData,
+): Promise<UpdateManyTransactionFormState> {
+  const dataList = formData.get('dataList')?.toString().split(',').map(Number)
+  const newStatus = formData.get('newStatus')?.toString()
+
+  if (!newStatus || !dataList || dataList.some(isNaN)) {
+    return { errors: { status: ['Selecione o status para fazer a alteração'] } }
+  }
+
+  try {
+    await prisma.transaction.updateMany({
+      where: { id: { in: dataList } },
+      data: { status: String(newStatus) as $Enums.StatusTransaction },
+    })
+  } catch (err) {
+    if (err instanceof Error) {
+      return { errors: { status: [err.message] } }
     }
   }
 

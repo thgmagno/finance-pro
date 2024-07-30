@@ -34,6 +34,13 @@ export interface UpdateTransactionFormState {
   }
 }
 
+export interface UpdateManyTransactionFormState {
+  success?: boolean
+  errors: {
+    status?: string[]
+  }
+}
+
 export interface CategoryFormState {
   success?: boolean
   errors: {
