@@ -131,7 +131,7 @@ export function GridTransactions({ data }: Props) {
             <input type="hidden" name="dataList" value={String(dataList)} />
             <select
               name="newStatus"
-              className="w-full rounded-md border border-slate-600 bg-transparent p-1 outline-none"
+              className="w-full rounded-md border border-slate-600 bg-transparent p-1 outline-none backdrop-blur-lg"
             >
               <option value="" className="bg-slate-700 text-slate-100">
                 Alterar status
