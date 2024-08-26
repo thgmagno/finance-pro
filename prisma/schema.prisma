@@ -34,7 +34,7 @@ model Transaction {
 
 model Category {
   id          Int             @id @default(autoincrement())
-  description String          @unique
+  description String
   type        TypeTransaction
   Transaction Transaction[]
   user        User            @relation(fields: [userId], references: [id])

@@ -34,13 +34,7 @@ export async function create(
       },
     })
   } catch (err) {
-    if (err instanceof Error) {
-      if (err.message.includes('Unique constraint')) {
-        return { errors: { description: ['Descrição duplicada'] } }
-      } else {
-        return { errors: { _form: 'Ocorreu um erro ao salvar' } }
-      }
-    }
+    return { errors: { _form: 'Ocorreu um erro ao salvar' } }
   }
 
   revalidatePath('/')
