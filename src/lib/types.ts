@@ -1,4 +1,4 @@
-import { Transaction } from '@prisma/client'
+import { Group, Invitation, Transaction } from '@prisma/client'
 
 export type SessionPayload = {
   id: string
@@ -34,4 +34,11 @@ export type SearchParamsTransactions = {
   maior_que?: number
   menor_que?: number
   tipo?: string
+}
+
+export type InvitationWithUser = Invitation & { user: { name: string } }
+
+export type GroupWithDetails = Group & {
+  creator: { name: string }
+  _count: { users: number }
 }

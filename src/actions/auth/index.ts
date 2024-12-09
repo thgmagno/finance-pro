@@ -93,8 +93,6 @@ export async function login(
       return { errors: { password: ['Senha inválida'] } }
     }
 
-    console.log(user)
-
     const payload = {
       id: user.id,
       name: user.name,
@@ -102,11 +100,8 @@ export async function login(
       groupId: user.groupId || undefined,
     }
 
-    console.log(payload)
-
     await actions.session.set(payload)
-  } catch (error) {
-    console.error(error)
+  } catch {
     return {
       errors: {
         _form: 'Não foi possível estabelecer uma conexão segura com o servidor',

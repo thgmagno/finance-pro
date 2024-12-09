@@ -13,7 +13,7 @@ model User {
   username String @unique
   password String
 
-  group         Group?       @relation("GroupMembers", fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  group         Group?       @relation("GroupMembers", fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   groupId       String?      @map("group_id")
   createdGroups Group[]      @relation("GroupCreator")
   Invitation    Invitation[]
@@ -22,28 +22,28 @@ model User {
 }
 
 model Group {
-  id          String        @id @default(cuid()) @map("_id")
-  name        String
-  description String?
-  tag         String?
-  balance     Float         @default(0)
-  creator     User          @relation("GroupCreator", fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  creatorId   String        @map("creator_id")
-  users       User[]        @relation("GroupMembers")
-  Transaction Transaction[]
-  Category    Category[]
-  Invitation  Invitation[]
-  allowFindMe Boolean       @default(true) @map("allow_find_me")
-  Goal        Goal[]
+  id           String        @id @default(cuid()) @map("_id")
+  name         String
+  description  String?
+  tag          String?
+  balance      Float         @default(0)
+  creator      User          @relation("GroupCreator", fields: [creatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  creatorId    String        @map("creator_id")
+  users        User[]        @relation("GroupMembers")
+  transactions Transaction[]
+  categories   Category[]
+  invitations  Invitation[]
+  allowFindMe  Boolean       @default(true) @map("allow_find_me")
+  goals        Goal[]
 
   @@map("groups")
 }
 
 model Invitation {
   id      String           @id @default(cuid()) @map("_id")
-  group   Group            @relation(fields: [groupId], references: [id])
+  group   Group            @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   groupId String           @map("group_id")
-  user    User             @relation(fields: [userId], references: [id])
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId  String           @map("user_id")
   status  StatusInvitation @default(PENDING)
 
@@ -60,7 +60,7 @@ model Transaction {
   type        TypeTransaction
   category    Category          @relation(fields: [categoryId], references: [id])
   categoryId  String            @map("category_id")
-  group       Group             @relation(fields: [groupId], references: [id])
+  group       Group             @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   groupId     String            @map("group_id")
   uuid        String
 
@@ -73,7 +73,7 @@ model Goal {
   amount      Float
   status      StatusGoal @default(PENDING)
   dueDate     DateTime
-  group       Group      @relation(fields: [groupId], references: [id])
+  group       Group      @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   groupId     String     @map("group_id")
 
   @@map("goals")
@@ -84,7 +84,7 @@ model Category {
   description String
   type        TypeTransaction
   Transaction Transaction[]
-  group       Group           @relation(fields: [groupId], references: [id])
+  group       Group           @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   groupId     String          @map("group_id")
 
   @@map("categories")

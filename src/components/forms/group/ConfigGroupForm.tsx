@@ -13,20 +13,14 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button, buttonVariants } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { SessionPayload } from '@/lib/types'
 import { Group } from '@prisma/client'
 import { Copy, Trash2 } from 'lucide-react'
-import { useActionState, useMemo, useRef, useState } from 'react'
+import { useActionState, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { ErrorMessage } from '../ErrorMessage'
 
@@ -54,32 +48,25 @@ export function ConfigGroupForm({ group, session }: ConfigGroupFormProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Configurações do grupo</CardTitle>
-        <CardDescription>
-          Configure as opções do grupo para personalizar sua experiência.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center space-x-4">
-          <Checkbox
-            id="allow-find-me"
-            checked={group?.allowFindMe}
-            onCheckedChange={handleAllowFindMe}
-          />
-          <label
-            htmlFor="allow-find-me"
-            className="flex flex-col gap-1 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Permitir que outros usuários encontrem você
-            <small className="text-xs text-muted-foreground">
-              Ao ativar esta opção, seu grupo ficará visível em buscas
-              realizadas por outros usuários. Eles poderão enviar convites para
-              participar, mas suas transações e dados financeiros continuarão
-              privados e visíveis apenas para os integrantes do grupo.
-            </small>
-          </label>
-        </div>
+      <CardContent className="mt-6">
+        {isOwnerGroup && (
+          <div className="flex items-center space-x-4">
+            <Checkbox
+              checked={group?.allowFindMe}
+              onCheckedChange={handleAllowFindMe}
+            />
+            <label className="flex flex-col gap-1 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              Permitir que outros usuários encontrem você
+              <small className="text-xs text-muted-foreground">
+                Ao ativar esta opção, seu grupo ficará visível em buscas
+                realizadas por outros usuários. Eles poderão enviar convites
+                para participar, mas suas transações e dados financeiros
+                continuarão privados e visíveis apenas para os integrantes do
+                grupo.
+              </small>
+            </label>
+          </div>
+        )}
         <form action={action} className="mt-6 flex flex-col gap-2">
           <div className="flex flex-col gap-1">
             <Label>Tag do grupo</Label>
@@ -122,12 +109,13 @@ export function ConfigGroupForm({ group, session }: ConfigGroupFormProps) {
             <Input
               name="description"
               defaultValue={group?.description ?? ''}
+              placeholder="Digite a descrição do grupo"
               readOnly={view === 'view'}
             />
             {<ErrorMessage message={formState.errors.description} />}
           </div>
           {isOwnerGroup ? (
-            <ConfigGroupOptions view={view} setView={setView} group={group} />
+            <ConfigGroupOptions view={view} setView={setView} />
           ) : (
             <LeaveGroupButton />
           )}
@@ -140,23 +128,28 @@ export function ConfigGroupForm({ group, session }: ConfigGroupFormProps) {
 interface ConfigGroupOptionsProps {
   view: 'view' | 'edit'
   setView: (view: 'view' | 'edit') => void
-  group: Group
 }
 
-function ConfigGroupOptions({ view, setView, group }: ConfigGroupOptionsProps) {
-  const nameConfirmationRef = useRef<HTMLInputElement>(null)
+function ConfigGroupOptions({ view, setView }: ConfigGroupOptionsProps) {
+  const [formState, action, isPending] = useActionState(actions.group.destroy, {
+    errors: {},
+  })
+  const [modalOpen, setModalOpen] = useState(false)
+  const [confirmGroupName, setConfirmGroupName] = useState('')
+  const [hasActionCompleted, setHasActionCompleted] = useState(false)
 
-  const handleDeleteGroup = async () => {
-    if (nameConfirmationRef.current?.value === group?.name) {
-      const result = await actions.group.destroy(group.id)
-      if (result.error) {
-        toast.error(result.message)
-      } else {
-        toast.success(result.message)
-      }
-    } else {
-      toast.error('O nome do grupo não corresponde ao nome do grupo')
+  useEffect(() => {
+    if (formState?.success && !hasActionCompleted) {
+      toast.success('O grupo foi excluído com sucesso')
+      closeModal()
+      setHasActionCompleted(true)
+      alert('O grupo foi excluído com sucesso')
     }
+  }, [formState?.success])
+
+  const closeModal = () => {
+    setModalOpen(false)
+    setConfirmGroupName('')
   }
 
   return (
@@ -177,9 +170,13 @@ function ConfigGroupOptions({ view, setView, group }: ConfigGroupOptionsProps) {
         </Button>
       )}
       {view === 'edit' && (
-        <AlertDialog>
+        <AlertDialog open={modalOpen} onOpenChange={setModalOpen}>
           <AlertDialogTrigger asChild>
-            <Button type="button" variant="destructive">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => setModalOpen(true)}
+            >
               <Trash2 className="h-4 w-4" />
               Excluir grupo
             </Button>
@@ -189,43 +186,45 @@ function ConfigGroupOptions({ view, setView, group }: ConfigGroupOptionsProps) {
               <AlertDialogTitle>
                 Tem certeza que deseja excluir o grupo?
               </AlertDialogTitle>
-              <AlertDialogDescription>
-                <p>
-                  <b>Atenção:</b> Esta ação é irreversível.
-                </p>
-                <p>
-                  Ao excluir o grupo, todos os dados financeiros e transações
-                  associados serão perdidos permanentemente.
-                </p>
-                <ul>
-                  <li>
-                    <b>Transações:</b> Todas as transações do grupo serão
-                    excluídas.
-                  </li>
-                  <li>
-                    <b>Dados financeiros:</b> Todos os dados financeiros do
-                    grupo serão excluídos.
-                  </li>
-                  <li>
-                    <b>Integrantes:</b> Todos os integrantes do grupo serão
-                    removidos.
-                  </li>
-                </ul>
+              <AlertDialogDescription className="text-start font-semibold text-red-600">
+                <span className="block">
+                  Você está prestes a excluir o grupo, esta ação é irreversível.
+                </span>
+                <span className="block">
+                  Todas as transações do grupo serão excluídas.
+                </span>
+                <span className="block">
+                  Todos os dados financeiros do grupo serão excluídos.
+                </span>
+                <span className="block">
+                  Todos os integrantes do grupo serão removidos e não poderão
+                  mais acessar o grupo.
+                </span>
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <form action="">
-              <AlertDialogContent>
-                <Label>Digite o nome do grupo para confirmar a exclusão</Label>
-                <Input name="confirm-group-name" />
-              </AlertDialogContent>
+            <form action={action}>
+              <div className="flex flex-col">
+                <Label className="mb-2">
+                  Digite o nome do grupo para confirmar a exclusão
+                </Label>
+                <Input
+                  name="confirmGroupName"
+                  value={confirmGroupName}
+                  onChange={(e) => setConfirmGroupName(e.target.value)}
+                />
+                <ErrorMessage message={formState.errors.confirmGroupName} />
+              </div>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDeleteGroup}
-                  className={buttonVariants({ variant: 'destructive' })}
+                <AlertDialogCancel onClick={closeModal}>
+                  Cancelar
+                </AlertDialogCancel>
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  disabled={isPending}
                 >
-                  Excluir grupo
-                </AlertDialogAction>
+                  {isPending ? 'Aguarde...' : 'Excluir grupo'}
+                </Button>
               </AlertDialogFooter>
             </form>
           </AlertDialogContent>

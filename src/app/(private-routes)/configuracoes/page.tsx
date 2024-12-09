@@ -1,6 +1,5 @@
 import { actions } from '@/actions'
 import { ConfigAccount } from '@/components/forms/group/ConfigAccount'
-import { ConfigGroupForm } from '@/components/forms/group/ConfigGroupForm'
 import { AppPage } from '@/components/ui/app-page'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -13,10 +12,7 @@ import {
 } from '@/components/ui/select'
 
 export default async function Configuracoes() {
-  const [session, group] = await Promise.all([
-    actions.session.get(),
-    actions.group.getGroupBySession(),
-  ])
+  const [session] = await Promise.all([actions.session.get()])
 
   return (
     <AppPage title="Configurações">
@@ -48,7 +44,6 @@ export default async function Configuracoes() {
           </CardContent>
         </Card>
         {session && <ConfigAccount session={session} />}
-        {group && <ConfigGroupForm group={group} session={session} />}
       </section>
     </AppPage>
   )

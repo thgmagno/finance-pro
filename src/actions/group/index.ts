@@ -1,8 +1,13 @@
 'use server'
 
+import { VisitorPermissionException } from '@/lib/exceptions/VisitorPermissionException'
 import {
   CreateGroupFormState,
   CreateGroupSchema,
+  DeleteGroupFormState,
+  DeleteGroupSchema,
+  SearchGroupFormState,
+  SearchGroupSchema,
 } from '@/lib/form-handlers/groups'
 import prisma from '@/lib/prisma'
 import { SessionPayload } from '@/lib/types'
@@ -32,6 +37,7 @@ export async function create(
       data: {
         name: parsed.data.name,
         creatorId: session.id,
+        description: parsed.data.description ?? '',
         tag,
       },
     })
@@ -54,7 +60,7 @@ export async function create(
     return { errors: { _form: 'Erro ao criar o grupo' } }
   }
 
-  redirect('/')
+  redirect('/grupo')
 }
 
 export async function update(
@@ -85,55 +91,102 @@ export async function update(
   }
 
   revalidatePath('/')
-  redirect('/configuracoes')
+  redirect('/grupo')
 }
 
-export async function destroy(groupId: string) {
+export async function destroy(
+  formState: DeleteGroupFormState,
+  formData: FormData,
+): Promise<DeleteGroupFormState> {
+  const parsed = DeleteGroupSchema.safeParse({
+    confirmGroupName: formData.get('confirmGroupName'),
+  })
+
+  if (!parsed.success) {
+    return { errors: parsed.error.flatten().fieldErrors }
+  }
+
   try {
-    await actions.session.get(true)
+    const session = await actions.session.get(true)
 
     const group = await prisma.group.findUnique({
-      where: { id: groupId },
+      where: { id: session.groupId },
     })
 
     if (!group) {
-      return { error: true, message: 'Grupo não encontrado' }
+      return { errors: { _form: 'Grupo não encontrado' } }
     }
 
-    await Promise.all([
-      prisma.transaction.deleteMany({
-        where: { groupId },
-      }),
-      prisma.goal.deleteMany({
-        where: { groupId },
-      }),
-      prisma.invitation.deleteMany({
-        where: { groupId },
-      }),
-      prisma.category.deleteMany({
-        where: { groupId },
-      }),
-      prisma.group.delete({
-        where: { id: groupId },
-      }),
-    ])
-  } catch {
-    return { error: true, message: 'Erro ao deletar o grupo' }
+    if (parsed.data.confirmGroupName !== group.name) {
+      return {
+        errors: {
+          confirmGroupName: [
+            'O nome informado não corresponde ao nome do grupo',
+          ],
+        },
+      }
+    }
+
+    await prisma.transaction.deleteMany({ where: { groupId: group.id } })
+    await prisma.goal.deleteMany({ where: { groupId: group.id } })
+    await prisma.invitation.deleteMany({ where: { groupId: group.id } })
+    await prisma.category.deleteMany({ where: { groupId: group.id } })
+
+    await actions.session.set({
+      id: session.id,
+      name: session.name,
+      username: session.username,
+      groupId: undefined,
+    })
+  } catch (error) {
+    if (error instanceof VisitorPermissionException) {
+      throw error
+    }
+
+    return { errors: { _form: 'Erro ao deletar o grupo' } }
   }
 
   revalidatePath('/')
-  return { error: false, message: 'Grupo deletado com sucesso' }
+  return { success: true, errors: {} }
 }
 
-export async function list() {
+export async function list(
+  formState: SearchGroupFormState,
+  formData: FormData,
+): Promise<SearchGroupFormState> {
+  const parsed = SearchGroupSchema.safeParse({
+    search: formData.get('search'),
+  })
+
+  if (!parsed.success) {
+    return { errors: parsed.error.flatten().fieldErrors }
+  }
+
   try {
     const groups = await prisma.group.findMany({
+      where: {
+        allowFindMe: true,
+        OR: [
+          { name: { contains: parsed.data.search, mode: 'insensitive' } },
+          { tag: { contains: parsed.data.search, mode: 'insensitive' } },
+        ],
+      },
       orderBy: { name: 'asc' },
+      include: {
+        creator: {
+          select: { name: true },
+        },
+        _count: {
+          select: {
+            users: true,
+          },
+        },
+      },
     })
 
-    return { error: false, message: '', groups }
+    return { data: groups, errors: {} }
   } catch {
-    return { error: true, message: 'Erro ao listar os grupos', groups: [] }
+    return { errors: { _form: 'Erro ao listar os grupos' } }
   }
 }
 
@@ -153,10 +206,20 @@ export async function get(groupId: string) {
   }
 }
 
-export async function getMembers(groupId: string) {
+export async function getMembers() {
   try {
+    const session = await actions.session.get(true)
+
+    if (!session?.groupId) {
+      return {
+        error: true,
+        message: 'Usuário não está em um grupo',
+        members: [],
+      }
+    }
+
     const members = await prisma.group.findUnique({
-      where: { id: groupId },
+      where: { id: session.groupId },
       include: {
         users: true,
       },
@@ -176,10 +239,27 @@ export async function getMembers(groupId: string) {
   }
 }
 
-export async function getInvitations(groupId: string) {
+export async function getInvitations() {
   try {
+    const session = await actions.session.get(true)
+
+    if (!session?.groupId) {
+      return {
+        error: true,
+        message: 'Usuário não está em um grupo',
+        invitations: [],
+      }
+    }
+
     const invitations = await prisma.invitation.findMany({
-      where: { groupId },
+      where: { groupId: session.groupId, status: 'PENDING' },
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
     })
 
     return { error: false, message: '', invitations }
@@ -219,65 +299,73 @@ export async function requestToJoin(groupId: string) {
   }
 }
 
-export async function acceptRequest(invitationId: string) {
+export async function handleRequest(
+  invitationId: string,
+  status: 'ACCEPTED' | 'REJECTED',
+) {
   try {
-    await prisma.invitation.update({
+    const invitation = await prisma.invitation.update({
       where: { id: invitationId },
-      data: { status: 'ACCEPTED' },
+      data: { status },
     })
 
-    return {
-      error: false,
-      message: 'Solicitação aceita com sucesso',
+    if (status === 'ACCEPTED') {
+      await prisma.group.update({
+        where: { id: invitation.groupId },
+        data: { users: { connect: { id: invitation.userId } } },
+      })
     }
   } catch {
     return {
       error: true,
-      message: 'Erro ao aceitar a solicitação',
+      message:
+        status === 'ACCEPTED'
+          ? 'Erro ao aceitar a solicitação'
+          : 'Erro ao rejeitar a solicitação',
     }
+  }
+
+  revalidatePath('/grupo')
+
+  return {
+    error: false,
+    message:
+      status === 'ACCEPTED'
+        ? 'Solicitação aceita com sucesso'
+        : 'Solicitação rejeitada com sucesso',
   }
 }
 
-export async function rejectRequest(invitationId: string) {
+export async function sendInvitation(groupId: string) {
   try {
-    await prisma.invitation.update({
-      where: { id: invitationId },
-      data: { status: 'REJECTED' },
+    const session = await actions.session.get(true)
+
+    const alreadySent = await prisma.invitation.findFirst({
+      where: { groupId, userId: session.id },
     })
 
-    return {
-      error: false,
-      message: 'Solicitação rejeitada com sucesso',
+    if (alreadySent) {
+      throw new Error('Um convite já foi enviado para este grupo')
     }
-  } catch {
-    return {
-      error: true,
-      message: 'Erro ao rejeitar a solicitação',
-    }
-  }
-}
-
-export async function invite(groupId: string, userId: string) {
-  try {
-    await actions.session.get(true)
 
     await prisma.invitation.create({
-      data: { groupId, userId },
+      data: { groupId, userId: session.id },
     })
 
     return {
       error: false,
       message: 'Usuário convidado com sucesso',
     }
-  } catch {
-    return {
-      error: true,
-      message: 'Erro ao convidar o usuário',
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error
     }
+
+    throw new Error('Erro ao enviar o convite')
   }
 }
 
-export async function removeMember(groupId: string, userId: string) {
+export async function removeParticipant(groupId: string, userId: string) {
   try {
     const group = await prisma.group.findUnique({
       where: { id: groupId },
@@ -303,16 +391,17 @@ export async function removeMember(groupId: string, userId: string) {
       where: { id: groupId },
       data: { users: { disconnect: { id: userId } } },
     })
-
-    return {
-      error: false,
-      message: 'Membro removido com sucesso',
-    }
   } catch {
     return {
       error: true,
-      message: 'Erro ao remover o membro do grupo',
+      message: 'Erro ao remover o participante do grupo',
     }
+  }
+
+  revalidatePath('/grupo')
+  return {
+    error: false,
+    message: 'Participante removido com sucesso',
   }
 }
 

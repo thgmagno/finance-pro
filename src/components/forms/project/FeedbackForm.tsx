@@ -79,13 +79,6 @@ export function FeedbackForm() {
             },
           )}
         >
-          <span
-            className={cn('mr-1', {
-              hidden: formData.feedbackMessage.length <= 500,
-            })}
-          >
-            Sua mensagem excede o limite de caracteres
-          </span>
           {formData.feedbackMessage.length}/500
         </small>
       </div>

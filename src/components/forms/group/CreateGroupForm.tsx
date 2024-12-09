@@ -33,11 +33,16 @@ export function CreateGroupForm() {
         </CardDescription>
       </CardHeader>
       <form action={action}>
-        <CardContent>
+        <CardContent className="space-y-2">
           <div>
             <Label htmlFor="name">Nome do grupo</Label>
             <Input type="text" id="name" name="name" />
             <ErrorMessage message={formState.errors.name} />
+          </div>
+          <div>
+            <Label htmlFor="description">Descrição do grupo (opcional)</Label>
+            <Input type="text" id="description" name="description" />
+            <ErrorMessage message={formState.errors.description} />
           </div>
           <ErrorMessage message={formState.errors._form} />
         </CardContent>
