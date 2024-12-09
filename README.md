@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Finance Pro
 
-## Getting Started
+### Controle suas finanças de forma simples e eficaz.
 
-First, run the development server:
+**Finance Pro** é uma ferramenta **open source** e **gratuita** projetada para te ajudar a gerenciar suas finanças pessoais com facilidade. Organize suas despesas, receitas, metas e muito mais de forma simples, intuitiva e acessível a todos!
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Recursos:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Projeto Open Source:** Você pode contribuir e adaptar o Finance Pro de acordo com suas necessidades.
+- **Gratuito:** O Finance Pro é totalmente gratuito, sem custos ou taxas escondidas.
+- **Estatísticas em Tempo Real:**
+  - **Total de Usuários:** Mais de **[Quantidade atual de usuários]** usuários cadastrados e contando!
+  - **Despesas Cadastradas:** Já são mais de **[Quantidade atual de despesas cadastradas]** despesas organizadas.
+  - **Receitas Cadastradas:** Um total de **[Quantidade atual de receitas cadastradas]** receitas registradas.
+  - **Metas Cadastradas:** Mais de **[Quantidade atual de metas cadastradas]** metas financeiras planejadas.
+  - **Grupos Criados:** Atualmente, **[Quantidade de grupos]** grupos estão ativos na plataforma.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Essas estatísticas são atualizadas dinamicamente, mostrando o crescimento contínuo dos dados gerenciados na aplicação.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Avisos:
 
-## Learn More
+⚠️ **Atenção!**
 
-To learn more about Next.js, take a look at the following resources:
+Este projeto foi desenvolvido para fins de uso pessoal e aprimorar conhecimentos e prática.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- O uso desta aplicação é livre de qualquer cobrança ou taxa.
+- O autor **não se responsabiliza por qualquer tipo de dano** causado pelo uso desta aplicação, seja ele financeiro, material ou de qualquer outra natureza.
+- O software é fornecido **"no estado em que se encontra"**, sem garantias de qualquer tipo.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Tenha bom senso ao utilizá-lo! 
 
-## Deploy on Vercel
+## Origem do Projeto
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Criado por **Thiago Magno**, o Finance Pro nasceu da necessidade de um sistema simples e eficiente para gerenciamento financeiro, sem complicações.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Tempo em Produção
+
+O Finance Pro está em produção desde **7 de junho de 2024**, e tem evoluído constantemente com o apoio da comunidade open source.

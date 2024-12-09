@@ -1,5 +1,7 @@
-import { Navbar } from '@/components/navbar'
-import { useSession } from '@/hooks/useSession'
+import { actions } from '@/actions'
+import { AppSidebar } from '@/components/sidebar/AppSidebar'
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { VisitorBanner } from '@/components/VisitorBanner'
 import { redirect } from 'next/navigation'
 
 export default async function PrivateLayout({
@@ -7,14 +9,19 @@ export default async function PrivateLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const { id, username } = await useSession()
-
-  if (!id || !username) redirect('/entrar')
+  const session = await actions.session.get()
+  if (!session) return redirect('/entrar')
 
   return (
-    <>
-      <Navbar />
-      <main className="p-2.5 font-light text-slate-100 md:p-5">{children}</main>
-    </>
+    <SidebarProvider>
+      <AppSidebar />
+      <main className="flex min-h-svh w-full flex-col">
+        <SidebarTrigger />
+        <div className="flex flex-1 flex-col px-4 pb-20 pt-2 md:px-6">
+          {session?.visitor && <VisitorBanner />}
+          {children}
+        </div>
+      </main>
+    </SidebarProvider>
   )
 }

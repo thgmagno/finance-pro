@@ -1,11 +1,9 @@
-import { Logotipo } from '@/components/Logotipo'
-import { LoginForm } from '@/components/form/Login'
+import LoginForm from '@/components/forms/auth/LoginForm'
 
 export default function Login() {
   return (
-    <>
-      <Logotipo />
+    <div className="flex min-h-screen flex-col items-center justify-center pb-40 pt-20">
       <LoginForm />
-    </>
+    </div>
   )
 }

@@ -1,14 +1,12 @@
-import { Toaster } from 'sonner'
+'use client'
 
-export default async function Providers({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+import { Toaster } from 'react-hot-toast'
+
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
       {children}
-      <Toaster />
+      <Toaster position="top-center" />
     </>
   )
 }

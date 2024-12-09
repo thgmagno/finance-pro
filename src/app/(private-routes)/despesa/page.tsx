@@ -1,71 +1,47 @@
 import { actions } from '@/actions'
-import { NewTransactionFormBtn } from '@/components/form/NewTransactionFormBtn'
-import { GridEmpty } from '@/components/grid/Empty'
-import { GridFilters } from '@/components/grid/Filters'
-import { GridTransactions } from '@/components/grid/Transactions'
-import { useSession } from '@/hooks/useSession'
-import { currencyBRL } from '@/utils/currencyBRL'
+import { DataTable } from '@/components/data-table'
+import { AppPage } from '@/components/ui/app-page'
+import { buttonVariants } from '@/components/ui/button'
+import { SearchParamsTransactions } from '@/lib/types'
+import { $Enums } from '@prisma/client'
+import Link from 'next/link'
+import { columns } from './columns'
 
 export default async function Expense({
   searchParams,
 }: {
-  searchParams: { mes: string; ano: string; categoria: string; status: string }
+  searchParams: SearchParamsTransactions
 }) {
-  const { id } = await useSession()
+  const params = await Promise.resolve(searchParams)
 
-  const response = await actions.transaction.findTransactions(
-    parseInt(id),
-    searchParams.mes,
-    searchParams.ano,
-  )
-
-  const extractExpenses = response?.data.filter(
-    (item) => item.type === 'EXPENSE',
-  )
-
-  const extractCategoryExpenses = await actions.category
-    .findMany(Number(id))
-    .then((data) => data.filter((dt) => dt.type === 'EXPENSE'))
-
-  const filteredExpenses = extractExpenses.filter((item) => {
-    const matchesCategory = searchParams.categoria
-      ? item.category.description === searchParams.categoria
-      : true
-
-    const matchesStatus =
-      searchParams.status === 'pendentes'
-        ? item.status === 'OVERDUE' || item.status === 'PENDING'
-        : searchParams.status === 'baixados'
-          ? item.status === 'OK'
-          : true
-
-    return matchesCategory && matchesStatus
+  const { data, error } = await actions.transaction.getAll({
+    page: params.pagina,
+    limit: params.limite,
+    status: params.status as $Enums.StatusTransaction,
+    from: params.de ? new Date(params.de) : undefined,
+    to: params.ate ? new Date(params.ate) : undefined,
+    greaterThan: params.maior_que,
+    lessThan: params.menor_que,
+    description: params.descricao,
+    categoryId: params.categoria,
+    type: params.tipo as $Enums.TypeTransaction,
   })
 
-  const totalAmount = filteredExpenses.reduce(
-    (acc, item) => acc + item.amount,
-    0,
-  )
+  if (error) {
+    return <div>{error}</div>
+  }
 
   return (
-    <>
-      <NewTransactionFormBtn userId={id} categories={extractCategoryExpenses} />
-      <h1 className="title">Despesa</h1>
-      <GridFilters
-        months={response.metadata.months}
-        years={response.metadata.years}
-        categories={extractCategoryExpenses}
-      />
-      <div className="my-3 flex justify-end md:mt-0">
-        <span>
-          Total: <b>{currencyBRL(totalAmount)}</b>
-        </span>
-      </div>
-      {filteredExpenses.length > 0 ? (
-        <GridTransactions data={filteredExpenses} />
-      ) : (
-        <GridEmpty />
-      )}
-    </>
+    <AppPage
+      title="Despesa"
+      description="Gerencie suas despesas"
+      actions={
+        <Link href="/despesa/incluir" className={buttonVariants()}>
+          Incluir despesa
+        </Link>
+      }
+    >
+      <DataTable data={data?.transactions ?? []} columns={columns} />
+    </AppPage>
   )
 }

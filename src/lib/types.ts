@@ -1,43 +1,37 @@
-export type PayloadType = {
+import { Transaction } from '@prisma/client'
+
+export type SessionPayload = {
   id: string
   name: string
   username: string
+  groupId?: string
+  visitor?: boolean
 }
 
-export type TypeTransaction = 'EXPENSE' | 'INCOME'
-
-export type StatusTransaction = 'OVERDUE' | 'PENDING' | 'OK'
-
-export type Transaction = {
-  id: number
-  description: string
-  amount: number
-  month: number
-  year: number
-  status: StatusTransaction
-  type: TypeTransaction
-  categoryId: number
-  userId: number
-  uuid: string | null
-  category: {
-    description: string
-  }
+export type ActionResponse<T> = {
+  error: boolean
+  message: string
+  data: T
 }
 
-export type SelectOptions = {
-  value: number
-  label: string
+export type TransactionsPaginated = {
+  currentPage: number
+  nextPage: number | null
+  previousPage: number | null
+  totalPages: number
+  totalTransactions: number
+  transactions: Transaction[]
 }
 
-export type Category = {
-  id: number
-  description: string
-  type: TypeTransaction
-}
-
-export type Filter = {
-  month: string
-  year: string
-  searchTerm: string
-  status: string
+export type SearchParamsTransactions = {
+  pagina?: number
+  limite?: number
+  descricao?: string
+  categoria?: string
+  status?: string
+  de?: string
+  ate?: string
+  maior_que?: number
+  menor_que?: number
+  tipo?: string
 }

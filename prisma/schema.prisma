@@ -3,22 +3,55 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
+  id       String @id @default(cuid()) @map("_id")
+  name     String
+  username String @unique
+  password String
+
+  group         Group?       @relation("GroupMembers", fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  groupId       String?      @map("group_id")
+  createdGroups Group[]      @relation("GroupCreator")
+  Invitation    Invitation[]
+
+  @@map("users")
+}
+
+model Group {
+  id          String        @id @default(cuid()) @map("_id")
   name        String
-  username    String        @unique
-  password    String
+  description String?
+  tag         String?
+  balance     Float         @default(0)
+  creator     User          @relation("GroupCreator", fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  creatorId   String        @map("creator_id")
+  users       User[]        @relation("GroupMembers")
   Transaction Transaction[]
   Category    Category[]
+  Invitation  Invitation[]
+  allowFindMe Boolean       @default(true) @map("allow_find_me")
+  Goal        Goal[]
+
+  @@map("groups")
+}
+
+model Invitation {
+  id      String           @id @default(cuid()) @map("_id")
+  group   Group            @relation(fields: [groupId], references: [id])
+  groupId String           @map("group_id")
+  user    User             @relation(fields: [userId], references: [id])
+  userId  String           @map("user_id")
+  status  StatusInvitation @default(PENDING)
+
+  @@map("invitations")
 }
 
 model Transaction {
-  id          Int               @id @default(autoincrement())
+  id          String            @id @default(cuid()) @map("_id")
   description String
   amount      Float
   month       Int
@@ -26,28 +59,64 @@ model Transaction {
   status      StatusTransaction @default(PENDING)
   type        TypeTransaction
   category    Category          @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  user        User              @relation(fields: [userId], references: [id])
-  userId      Int
+  categoryId  String            @map("category_id")
+  group       Group             @relation(fields: [groupId], references: [id])
+  groupId     String            @map("group_id")
   uuid        String
+
+  @@map("transactions")
+}
+
+model Goal {
+  id          String     @id @default(cuid()) @map("_id")
+  description String
+  amount      Float
+  status      StatusGoal @default(PENDING)
+  dueDate     DateTime
+  group       Group      @relation(fields: [groupId], references: [id])
+  groupId     String     @map("group_id")
+
+  @@map("goals")
 }
 
 model Category {
-  id          Int             @id @default(autoincrement())
+  id          String          @id @default(cuid()) @map("_id")
   description String
   type        TypeTransaction
   Transaction Transaction[]
-  user        User            @relation(fields: [userId], references: [id])
-  userId      Int
+  group       Group           @relation(fields: [groupId], references: [id])
+  groupId     String          @map("group_id")
+
+  @@map("categories")
+}
+
+model Feedback {
+  id        String   @id @default(cuid()) @map("_id")
+  author    String?
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("feedbacks")
 }
 
 enum TypeTransaction {
-  EXPENSE
-  INCOME
+  EXPENSE @map("despesa")
+  INCOME  @map("receita")
 }
 
 enum StatusTransaction {
-  OVERDUE
-  PENDING
-  OK
+  OVERDUE @map("atrasado")
+  PENDING @map("pendente")
+  OK      @map("ok")
+}
+
+enum StatusInvitation {
+  PENDING  @map("pendente")
+  ACCEPTED @map("aceito")
+  REJECTED @map("rejeitado")
+}
+
+enum StatusGoal {
+  PENDING @map("pendente")
+  OK      @map("ok")
 }
