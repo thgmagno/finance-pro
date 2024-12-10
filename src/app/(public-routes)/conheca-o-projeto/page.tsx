@@ -5,6 +5,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ArrowUpRight, Coins } from 'lucide-react'
 import Link from 'next/link'
+
 export default async function ConhecaOProjeto() {
   const { usersCount, expensesCount, incomesCount, groupsCount } =
     await getProjectAnalytics()
@@ -26,7 +27,7 @@ export default async function ConhecaOProjeto() {
         <p className="mb-20 mt-2 text-lg">
           Controle suas finanças de forma simples e eficaz.
         </p>
-        <p className="text-lg">
+        <p className="text-xl leading-relaxed md:text-2xl">
           <strong>Finance Pro</strong> é uma ferramenta{' '}
           <strong>open source</strong> e <strong>gratuita</strong> projetada
           para te ajudar a gerenciar suas finanças pessoais com facilidade.
@@ -35,12 +36,8 @@ export default async function ConhecaOProjeto() {
         </p>
       </section>
 
-      <section className="mb-12 rounded-lg bg-zinc-100 p-4">
+      <section className="mb-12 rounded-lg border bg-zinc-200/60 p-4 shadow">
         <h2 className="mb-2 text-2xl font-bold">Recursos e Estatísticas</h2>
-        <p className="mb-5 text-sm text-muted-foreground">
-          Essas estatísticas são atualizadas dinamicamente, mostrando o
-          crescimento contínuo dos dados gerados na aplicação.
-        </p>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-lg bg-white p-4 shadow-md">
             <strong>Projeto Open Source:</strong>
@@ -79,7 +76,7 @@ export default async function ConhecaOProjeto() {
         </div>
       </section>
 
-      <section className="mb-12 rounded-lg bg-zinc-100 p-4">
+      <section className="mb-12 rounded-lg border bg-zinc-200/60 p-4 shadow">
         <h2 className="mb-4 text-2xl font-bold">Origem do Projeto</h2>
         <p className="md:text-lg">
           Criado por <strong>Thiago Magno</strong>, o Finance Pro nasceu da
@@ -99,7 +96,7 @@ export default async function ConhecaOProjeto() {
         </p>
       </section>
 
-      <section className="mb-12 space-y-4 rounded-lg bg-zinc-100 p-4">
+      <section className="mb-12 space-y-4 rounded-lg border bg-zinc-200/60 p-4 shadow">
         <h2 className="text-2xl font-bold">Feedback dos usuários</h2>
         <p className="text-sm text-zinc-500">
           Agradecemos a todos que contribuem para o Finance Pro!
@@ -115,7 +112,7 @@ export default async function ConhecaOProjeto() {
         </div>
       </section>
 
-      <section className="mb-12 rounded-lg bg-gray-100 p-3 shadow-md md:p-6">
+      <section className="mb-12 rounded-lg border bg-zinc-200/60 p-3 shadow-md md:p-6">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">
           Deixe seu feedback para apoiar nosso trabalho
         </h2>

@@ -11,17 +11,34 @@ export default function Ajuda() {
   return (
     <AppPage title="Ajuda">
       <Accordion type="multiple">
+        <AccordionItem value="proposta-do-sistema">
+          <AccordionTrigger>
+            <span>Qual é a proposta do Finance Pro?</span>
+          </AccordionTrigger>
+          <AccordionContent>
+            <p className="text-sm text-muted-foreground">
+              O Finance Pro visa oferecer um sistema intuitivo e acessível de
+              qualquer lugar. Permite monitorar suas finanças por categorias e
+              compartilhar com grupos, a proposta é tornar a sua gestão
+              financeira mais prática e eficiente.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem value="como-funciona">
           <AccordionTrigger>
             <span>Como funciona o sistema?</span>
           </AccordionTrigger>
           <AccordionContent>
             <p className="text-sm text-muted-foreground">
-              O Finance Pro é uma ferramenta prática para organizar suas
-              finanças pessoais. Primeiro, crie sua conta — se você está aqui,
-              essa etapa já foi concluída. Em seguida, basta criar um grupo para
-              começar a gerenciar suas receitas, despesas e muito mais!
+              O Finance Pro funciona de forma simples e prática. Veja os passos
+              para começar:
             </p>
+            <ol className="mt-2 list-inside list-decimal text-sm text-muted-foreground">
+              <li>Crie uma conta para acessar a plataforma.</li>
+              <li>Crie ou participe de grupos de finanças.</li>
+              <li>Registre suas receitas e despesas.</li>
+              <li>Organize suas transações por categorias.</li>
+            </ol>
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="open-source-e-gratuito">
@@ -91,20 +108,6 @@ export default function Ajuda() {
               segura. Apesar de não utilizarmos servidores próprios, contamos
               com uma infraestrutura de confiança para hospedar a aplicação e o
               banco de dados.
-            </p>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="vantagens-do-sistema">
-          <AccordionTrigger>
-            <span>Quais as vantagens do Finance Pro?</span>
-          </AccordionTrigger>
-          <AccordionContent>
-            <p className="text-sm text-muted-foreground">
-              Com o Finance Pro, você tem controle total sobre suas finanças de
-              forma simples e eficiente. O sistema é intuitivo, acessível de
-              qualquer lugar e oferece ferramentas como relatórios detalhados,
-              gestão de categorias personalizadas e compartilhamento de grupos.
-              Tudo pensado para facilitar sua vida financeira.
             </p>
           </AccordionContent>
         </AccordionItem>

@@ -3,7 +3,6 @@
 import { actions } from '@/actions'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -12,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
@@ -114,11 +113,7 @@ export function ConfigGroupForm({ group, session }: ConfigGroupFormProps) {
             />
             {<ErrorMessage message={formState.errors.description} />}
           </div>
-          {isOwnerGroup ? (
-            <ConfigGroupOptions view={view} setView={setView} />
-          ) : (
-            <LeaveGroupButton />
-          )}
+          <ConfigGroupOptions view={view} setView={setView} />
         </form>
       </CardContent>
     </Card>
@@ -231,38 +226,5 @@ function ConfigGroupOptions({ view, setView }: ConfigGroupOptionsProps) {
         </AlertDialog>
       )}
     </div>
-  )
-}
-
-function LeaveGroupButton() {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button type="button" variant="destructive">
-          <Trash2 className="h-4 w-4" />
-          Sair do grupo
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            Tem certeza que deseja sair do grupo?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Tenha em mente que você não poderá mais acessar as transações e os
-            dados financeiros do grupo.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={async () => await actions.session.del()}
-            className={buttonVariants({ variant: 'destructive' })}
-          >
-            Sair do grupo
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
   )
 }

@@ -24,6 +24,7 @@ import { SessionPayload } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { Group, User } from '@prisma/client'
 import { Crown, Trash2, User as UserIcon } from 'lucide-react'
+import { LeaveGroupButton } from './LeaveGroupButton'
 
 interface ParticipantsGroupFormProps {
   members: User[]
@@ -36,13 +37,25 @@ export function ParticipantsGroupForm({
   group,
   session,
 }: ParticipantsGroupFormProps) {
+  const isOwnerGroup = group.creatorId === session.id
+
   return (
     <Card>
       <CardHeader className="pb-0">
-        <CardTitle>{group.name}</CardTitle>
-        {group.description && (
-          <CardDescription>{group.description}</CardDescription>
-        )}
+        <div className="flex justify-between">
+          <div>
+            <CardTitle>{group.name}</CardTitle>
+            {group.description && (
+              <CardDescription className="flex flex-col space-y-1">
+                <span>{group.description}</span>
+                <span className="text-xs text-muted-foreground">
+                  {members.length} participantes
+                </span>
+              </CardDescription>
+            )}
+          </div>
+          {!isOwnerGroup && <LeaveGroupButton />}
+        </div>
       </CardHeader>
       <CardContent className="mt-6">
         <form action="" className="flex flex-col gap-2">
@@ -55,9 +68,6 @@ export function ParticipantsGroupForm({
                 session={session}
               />
             ))}
-            <span className="mt-3 text-center text-sm text-muted-foreground">
-              Total de participantes: {members.length}
-            </span>
           </div>
         </form>
       </CardContent>

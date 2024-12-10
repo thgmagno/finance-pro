@@ -7,6 +7,7 @@ import { AppPage } from '@/components/ui/app-page'
 import { buttonVariants } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { InvitationWithUser, SessionPayload } from '@/lib/types'
+import { cn } from '@/lib/utils'
 import { Group, User } from '@prisma/client'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -70,9 +71,11 @@ function SearchGroup() {
 }
 
 function MyGroup({ group, session, members, invitations }: GroupsPageProps) {
+  const isOwnerGroup = group.creatorId === session.id
+
   return (
     <Tabs defaultValue="participants">
-      <TabsList>
+      <TabsList className={cn('hidden', { 'inline-flex': isOwnerGroup })}>
         <TabsTrigger value="participants">Participantes</TabsTrigger>
         <TabsTrigger value="requests">
           Solicitações{' '}

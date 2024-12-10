@@ -28,9 +28,9 @@ export function Greeting({ name }: GreetingProps) {
       {visible && (
         <motion.div
           key={name}
-          exit={{ opacity: 0, x: 30 }}
+          exit={{ opacity: 0, y: -30 }}
           transition={{ duration: 0.7 }}
-          className="mr-2 p-2 text-sm font-medium italic text-muted-foreground"
+          className="mr-2 p-2 text-sm font-medium text-muted-foreground"
         >
           Olá, {name}!
         </motion.div>

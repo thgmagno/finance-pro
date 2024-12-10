@@ -11,9 +11,12 @@ interface FeedbacksPageProps {
   }
 }
 
-export default function FeedbacksPage({ searchParams }: FeedbacksPageProps) {
-  const parsedPage = parseInt(searchParams.pagina || '1')
-  const parsedLimit = parseInt(searchParams.limite || '10')
+export default async function FeedbacksPage({
+  searchParams,
+}: FeedbacksPageProps) {
+  const params = await Promise.resolve(searchParams)
+  const parsedPage = parseInt(params.pagina || '1')
+  const parsedLimit = parseInt(params.limite || '10')
 
   return (
     <div className="mx-auto flex w-[96%] max-w-3xl flex-col items-center justify-center space-y-4 pb-40">

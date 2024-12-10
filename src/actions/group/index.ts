@@ -341,7 +341,7 @@ export async function sendInvitation(groupId: string) {
     const session = await actions.session.get(true)
 
     const alreadySent = await prisma.invitation.findFirst({
-      where: { groupId, userId: session.id },
+      where: { groupId, userId: session.id, status: 'PENDING' },
     })
 
     if (alreadySent) {
@@ -405,25 +405,30 @@ export async function removeParticipant(groupId: string, userId: string) {
   }
 }
 
-export async function leave(groupId: string) {
+export async function leave() {
   try {
     const session = await actions.session.get(true)
 
     await prisma.group.update({
-      where: { id: groupId },
+      where: { id: session.groupId },
       data: { users: { disconnect: { id: session.id } } },
     })
 
-    return {
-      error: false,
-      message: 'Você saiu do grupo com sucesso',
-    }
+    await actions.session.set({
+      id: session.id,
+      name: session.name,
+      username: session.username,
+      groupId: undefined,
+    })
   } catch {
     return {
       error: true,
       message: 'Erro ao sair do grupo',
     }
   }
+
+  revalidatePath('/')
+  redirect('/grupo')
 }
 
 export async function updateAllowFindMe(allowFindMe: boolean) {
@@ -463,4 +468,18 @@ async function generateUniqueTag() {
   }
 
   return tag
+}
+
+export async function getBalance() {
+  const session = await actions.session.get()
+  if (!session?.groupId) {
+    return 0
+  }
+
+  const res = await prisma.group.findUnique({
+    where: { id: session.groupId, users: { some: { id: session.id } } },
+    select: { balance: true },
+  })
+
+  return res?.balance ?? 0
 }
