@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={baiJamjuree.className}>
+      <body className={baiJamjuree.className} suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
