@@ -10,8 +10,6 @@ import { InvitationWithUser, SessionPayload } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { Group, User } from '@prisma/client'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import { env } from 'root/env'
 
 interface GroupsPageProps {
   group: Group
@@ -28,13 +26,6 @@ export default async function GroupsPage() {
     actions.group.getInvitations().then((res) => res.invitations),
   ])
   const alreadyHasGroup = session?.groupId
-
-  if (
-    members.length > 0 &&
-    !members.find((member) => member.id === session?.id)
-  ) {
-    redirect(`${env.NEXT_PUBLIC_API_URL}/refresh-token`)
-  }
 
   return (
     <AppPage

@@ -1,54 +1,41 @@
-import { actions } from '@/actions'
+import prisma from '@/lib/prisma'
 import { SessionPayload } from '@/lib/types'
 import * as jose from 'jose'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { env } from 'root/env'
 
-export async function POST(request: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const { refreshToken } = await request.json()
+    const { searchParams } = new URL(req.url)
+    const id = searchParams.get('id')
 
-    const parsedRefreshToken = await jose.jwtVerify(
-      refreshToken,
-      new TextEncoder().encode(env.JWT_SECRET),
-    )
-
-    const { sub } = parsedRefreshToken.payload
-
-    const newSession = await actions.user.getUserInfo(sub as string)
-
-    const newPayload: SessionPayload = {
-      id: newSession.id,
-      name: newSession.name,
-      username: newSession.username,
-      groupId: newSession.group?.id,
+    if (!id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const cookieStore = await cookies()
-    const accessTokenMaxAge = 60
+    const user = await prisma.user.findUniqueOrThrow({ where: { id } })
 
-    const accessToken = await new jose.SignJWT(newPayload)
-      // Teste em desenvolvimento
-      .setExpirationTime('1m')
+    const payload: SessionPayload = {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+    }
+
+    if (user.groupId) {
+      payload.groupId = user.groupId
+    }
+
+    if (user.id === env.VISITOR_ID) {
+      payload.visitor = true
+    }
+
+    const accessToken = await new jose.SignJWT(payload)
+      .setExpirationTime('15m')
       .setProtectedHeader({ alg: 'HS256' })
       .sign(new TextEncoder().encode(env.JWT_SECRET))
 
-    cookieStore.set(env.ACCESS_TOKEN, accessToken, {
-      httpOnly: true,
-      secure: true,
-      path: '/',
-      maxAge: accessTokenMaxAge,
-    })
-
-    return NextResponse.json({
-      message: 'Tokens renovados com sucesso!',
-      status: 200,
-    })
-  } catch (error) {
-    return NextResponse.json({
-      message: 'Erro ao renovar tokens!',
-      status: 401,
-    })
+    return NextResponse.json({ accessToken }, { status: 200 })
+  } catch {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 }

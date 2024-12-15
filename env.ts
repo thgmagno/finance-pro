@@ -8,6 +8,8 @@ const parsed = z.object({
   VISITOR_GROUP_ID: z.string(),
   ACCESS_TOKEN: z.string(),
   REFRESH_TOKEN: z.string(),
+  ACCESS_TOKEN_MAX_AGE: z.string().transform(Number),
+  REFRESH_TOKEN_MAX_AGE: z.string().transform(Number),
 })
 
 export const env = parsed.parse(process.env)
