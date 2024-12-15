@@ -65,8 +65,7 @@ export async function getProjectAnalytics() {
 
   const groupsCount = await prisma.group.count()
 
-  // quantidade atual de metas cadastradas
-  // const goalsCount = await prisma.goal.count()
+  const goalsCount = await prisma.goal.count()
 
-  return { usersCount, expensesCount, incomesCount, groupsCount }
+  return { usersCount, expensesCount, incomesCount, groupsCount, goalsCount }
 }

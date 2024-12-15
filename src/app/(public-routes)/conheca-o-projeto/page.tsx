@@ -3,11 +3,11 @@ import { FeedbackList } from '@/components/FeedbackList'
 import { FeedbackForm } from '@/components/forms/project/FeedbackForm'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { ArrowUpRight, Coins } from 'lucide-react'
+import { ArrowUpRight, Coins, Github, Linkedin } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function ConhecaOProjeto() {
-  const { usersCount, expensesCount, incomesCount, groupsCount } =
+  const { usersCount, expensesCount, incomesCount, groupsCount, goalsCount } =
     await getProjectAnalytics()
 
   return (
@@ -67,7 +67,7 @@ export default async function ConhecaOProjeto() {
           </div>
           <div className="rounded-lg bg-white p-4 shadow-md">
             <strong>Metas Cadastradas:</strong>
-            <p>Mais de 'implementar' metas financeiras planejadas.</p>
+            <p>Mais de {goalsCount} metas financeiras planejadas.</p>
           </div>
           <div className="rounded-lg bg-white p-4 shadow-md">
             <strong>Grupos no Finance Pro:</strong>
@@ -94,6 +94,26 @@ export default async function ConhecaOProjeto() {
           projeto tem se expandido e adaptado às necessidades de seus usuários,
           garantindo cada vez mais funcionalidades e estabilidade.
         </p>
+        <div className="mt-8 flex gap-4">
+          <Link
+            href="https://github.com/thgmagno/finance-pro"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(buttonVariants())}
+          >
+            <Github className="h-4 w-4" />
+            GitHub do Projeto
+          </Link>
+          <Link
+            href="https://www.linkedin.com/in/thgmagno/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(buttonVariants({ variant: 'primary' }))}
+          >
+            <Linkedin className="h-4 w-4" />
+            LinkedIn do Criador
+          </Link>
+        </div>
       </section>
 
       <section className="mb-12 space-y-4 rounded-lg border bg-zinc-200/60 p-4 shadow">

@@ -1,6 +1,7 @@
 'use client'
 
 import { actions } from '@/actions'
+import { buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -89,7 +90,11 @@ export function FeedbackForm() {
           !formData.feedbackMessage ||
           formData.feedbackMessage.length > 500
         }
-        className="w-full rounded-lg bg-blue-500 py-2 text-white transition hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500"
+        className={cn(
+          'w-full',
+          { disabled: isLoading },
+          buttonVariants({ variant: 'primary' }),
+        )}
       >
         {isLoading ? 'Processando sua mensagem...' : 'Enviar Feedback'}
       </button>
