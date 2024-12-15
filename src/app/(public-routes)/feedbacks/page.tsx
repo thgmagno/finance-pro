@@ -5,16 +5,16 @@ import { Undo2 } from 'lucide-react'
 import Link from 'next/link'
 
 interface FeedbacksPageProps {
-  searchParams: {
-    pagina?: string
-    limite?: string
-  }
+  pagina?: string
+  limite?: string
 }
 
 export default async function FeedbacksPage({
   searchParams,
-}: FeedbacksPageProps) {
-  const params = await Promise.resolve(searchParams)
+}: {
+  searchParams: Promise<FeedbacksPageProps>
+}) {
+  const params = await searchParams
   const parsedPage = parseInt(params.pagina || '1')
   const parsedLimit = parseInt(params.limite || '10')
 
