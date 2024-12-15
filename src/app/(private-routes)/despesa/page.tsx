@@ -10,9 +10,9 @@ import { columns } from './columns'
 export default async function Expense({
   searchParams,
 }: {
-  searchParams: SearchParamsTransactions
+  searchParams: Promise<SearchParamsTransactions>
 }) {
-  const params = await Promise.resolve(searchParams)
+  const params = await searchParams
 
   const { data, error } = await actions.transaction.getAll({
     page: params.pagina,
