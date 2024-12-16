@@ -18,7 +18,7 @@ export default async function PrivateLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar balance={balance} />
+      <AppSidebar balance={balance} isVisitor={session?.visitor} />
       <main className="flex min-h-svh w-full flex-col">
         <div className="flex items-center justify-between gap-2 overflow-hidden">
           <SidebarTrigger />

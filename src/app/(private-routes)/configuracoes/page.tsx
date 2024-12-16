@@ -10,7 +10,7 @@ export default async function Configuracoes() {
     <AppPage title="Configurações">
       <section className="flex flex-col gap-4">
         <ConfigSystem />
-        {session && <ConfigAccount session={session} />}
+        {session && !session.visitor && <ConfigAccount session={session} />}
       </section>
     </AppPage>
   )

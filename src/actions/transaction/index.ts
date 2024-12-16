@@ -316,7 +316,7 @@ export async function setStatus(
   status: $Enums.StatusTransaction,
 ) {
   try {
-    const session = await actions.session.get()
+    const session = await actions.session.get(true)
     if (!session?.groupId) {
       return { errors: { _form: 'Grupo não encontrado' } }
     }

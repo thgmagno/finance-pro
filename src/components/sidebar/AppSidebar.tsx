@@ -20,9 +20,10 @@ import { Options } from './Options'
 
 interface Props {
   balance: number
+  isVisitor?: boolean
 }
 
-export function AppSidebar({ balance }: Props) {
+export function AppSidebar({ balance, isVisitor }: Props) {
   const { toggleSidebar } = useSidebar()
   const { position } = useSidebarStore()
 
@@ -31,6 +32,10 @@ export function AppSidebar({ balance }: Props) {
       toggleSidebar()
     }
   }
+
+  const filteredOptions = isVisitor
+    ? Options.filter((option) => option.title !== 'Grupo')
+    : Options
 
   return (
     <Sidebar className="bg-zinc-100">
@@ -59,7 +64,7 @@ export function AppSidebar({ balance }: Props) {
             })}
           >
             <SidebarMenu>
-              {Options.map((option) => (
+              {filteredOptions.map((option) => (
                 <SidebarMenuItem key={option.title}>
                   <SidebarMenuButton asChild onClick={handleClick}>
                     <Link href={option.url}>
