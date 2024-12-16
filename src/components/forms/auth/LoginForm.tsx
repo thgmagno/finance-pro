@@ -13,13 +13,21 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import { ErrorMessage } from '../ErrorMessage'
 
 export default function LoginForm() {
+  const [isVisitorLoading, setIsVisitorLoading] = useState(false)
+
   const [formState, action, isPending] = useActionState(actions.auth.login, {
     errors: {},
   })
+
+  const handleVisitorLogin = async () => {
+    setIsVisitorLoading(true)
+    await actions.session.createVisitorSession()
+    setIsVisitorLoading(false)
+  }
 
   return (
     <Card className="w-[96%] max-w-[320px]">
@@ -42,12 +50,13 @@ export default function LoginForm() {
             {isPending ? 'Carregando...' : 'Entrar'}
           </Button>
           <Button
-            onClick={() => actions.session.createVisitorSession()}
+            onClick={handleVisitorLogin}
             variant="outline"
             className="w-full"
             type="button"
+            disabled={isVisitorLoading}
           >
-            Entre como visitante
+            {isVisitorLoading ? 'Carregando...' : 'Entre como visitante'}
           </Button>
         </form>
       </CardContent>
