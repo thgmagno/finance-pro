@@ -1,6 +1,7 @@
 package com.api.finance_pro.controller;
 
 import com.api.finance_pro.dto.RegistrationRequestDTO;
+import com.api.finance_pro.model.ApiResponse;
 import com.api.finance_pro.model.RegistrationRequest;
 import com.api.finance_pro.repository.RegistrationRequestRepository;
 import com.api.finance_pro.service.EmailService;
@@ -31,7 +32,7 @@ public class AuthenticationController {
     private String baseUrl;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegistrationRequestDTO registrationRequestDTO) {
+    public ResponseEntity<ApiResponse<Void>> register(@RequestBody RegistrationRequestDTO registrationRequestDTO) {
         try {
             final var key = UUID.randomUUID().toString();
 
@@ -49,33 +50,33 @@ public class AuthenticationController {
 
             repository.save(request);
 
-            return ResponseEntity.ok("Registration request submitted.");
+            return ResponseEntity.ok(ApiResponse.success("Solicitação de registro enviada com sucesso. Verifique seu e-mail.", null));
         } catch (Exception e) {
             logService.logError("Erro ao registrar usuário.", e);
-            return ResponseEntity.status(500).body("Internal server error.");
+            return ResponseEntity.status(500).body(ApiResponse.fail("Erro interno ao processar o registro. Tente novamente mais tarde.", null));
         }
     }
 
-    @GetMapping("verify")
-    public ResponseEntity<String> verify(@RequestParam String key) {
+    @GetMapping("/verify")
+    public ResponseEntity<ApiResponse<Void>> verify(@RequestParam String key) {
         try {
             final var requestOpt = repository.findByKey(key);
 
             if (requestOpt.isEmpty()) {
-                return ResponseEntity.badRequest().body("Invalid key.");
+                return ResponseEntity.badRequest().body(ApiResponse.fail("Chave de verificação inválida.", null));
             }
 
             final var request = requestOpt.get();
             if (request.getExpiresAt().isBefore(LocalDateTime.now())) {
-                return ResponseEntity.badRequest().body("Link expired.");
+                repository.delete(request);
+                return ResponseEntity.badRequest().body(ApiResponse.fail("Link expirado. Solicite um novo registro.", null));
             }
 
             repository.delete(request);
-
-            return ResponseEntity.ok("Account verified.");
+            return ResponseEntity.ok(ApiResponse.success("Conta verificada com sucesso.", null));
         } catch (Exception e) {
             logService.logError("Erro durante a verificação de conta de usuário.", e);
-            return ResponseEntity.status(500).body("Internal server error.");
+            return ResponseEntity.status(500).body(ApiResponse.fail("Erro interno ao verificar conta. Tente novamente mais tarde.", null));
         }
     }
 }
