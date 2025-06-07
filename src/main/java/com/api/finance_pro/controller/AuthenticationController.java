@@ -53,7 +53,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(ApiResponse.success("Por favor, confirme seu endereço de e-mail clicando no link que enviamos para sua caixa de entrada.", null));
         } catch (Exception e) {
             logService.logError("Erro ao registrar usuário.", e);
-            return ResponseEntity.status(500).body(ApiResponse.fail("Erro interno ao processar o registro. Tente novamente mais tarde.", null));
+            return ResponseEntity.status(500).body(ApiResponse.fail("Erro ao processar a requisição. Tente novamente mais tarde.", null));
         }
     }
 
