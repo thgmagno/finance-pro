@@ -1,8 +1,10 @@
 package com.api.finance_pro.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class ApiResponse<T> {
     private boolean error;
     private String message;
