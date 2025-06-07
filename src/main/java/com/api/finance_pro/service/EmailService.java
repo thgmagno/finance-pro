@@ -1,22 +1,23 @@
 package com.api.finance_pro.service;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.Properties;
 
+@Service
 public class EmailService {
 
     private final Session session;
     private final String from;
 
-    public EmailService() {
-        final var dotenv = Dotenv.load();
-        final var username = dotenv.get("MAILERSEND_USERNAME");
-        final var password = dotenv.get("MAILERSEND_PASSWORD");
-
+    public EmailService(
+            @Value("${MAILERSEND_USERNAME}") String username,
+            @Value("${MAILERSEND_PASSWORD}") String password
+    ) {
         this.from = username;
 
         final var props = new Properties();
@@ -26,9 +27,9 @@ public class EmailService {
         props.put("mail.smtp.port", "587");
 
         this.session = Session.getInstance(props, new Authenticator() {
-           protected PasswordAuthentication getPasswordAuthentication() {
-               return new PasswordAuthentication(username, password);
-           }
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
         });
     }
 

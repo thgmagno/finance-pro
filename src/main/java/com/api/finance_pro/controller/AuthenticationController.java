@@ -4,13 +4,14 @@ import com.api.finance_pro.dto.RegistrationRequestDTO;
 import com.api.finance_pro.model.RegistrationRequest;
 import com.api.finance_pro.repository.RegistrationRequestRepository;
 import com.api.finance_pro.service.EmailService;
+import com.api.finance_pro.service.LogService;
+import com.api.finance_pro.template.VerifyAccountTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -23,20 +24,58 @@ public class AuthenticationController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private LogService logService;
+
+    @Value("${app.base.url}")
+    private String baseUrl;
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegistrationRequestDTO registrationRequestDTO) {
-        final var token = UUID.randomUUID().toString();
+        try {
+            final var key = UUID.randomUUID().toString();
 
-        final var request = new RegistrationRequest(
-                registrationRequestDTO.name(),
-                registrationRequestDTO.email(),
-                registrationRequestDTO.hash(),
-                token
-        );
+            final var request = new RegistrationRequest(
+                    registrationRequestDTO.name(),
+                    registrationRequestDTO.email(),
+                    registrationRequestDTO.hash(),
+                    key,
+                    LocalDateTime.now().plusMinutes(15)
+            );
 
-        repository.save(request);
+            final var verifyLink = baseUrl + "/auth/verify?key=" + key;
+            final var verifyAccountTemplate = new VerifyAccountTemplate(request.getName(), verifyLink);
+            emailService.sendEmail(request.getEmail(), verifyAccountTemplate.getSubject(), verifyAccountTemplate.build());
 
-        return ResponseEntity.ok("Registration request submitted.");
+            repository.save(request);
+
+            return ResponseEntity.ok("Registration request submitted.");
+        } catch (Exception e) {
+            logService.logError("Erro ao registrar usuário.", e);
+            return ResponseEntity.status(500).body("Internal server error.");
+        }
     }
 
+    @GetMapping("verify")
+    public ResponseEntity<String> verify(@RequestParam String key) {
+        try {
+            final var requestOpt = repository.findByKey(key);
+
+            if (requestOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body("Invalid key.");
+            }
+
+            final var request = requestOpt.get();
+            if (request.getExpiresAt().isBefore(LocalDateTime.now())) {
+                return ResponseEntity.badRequest().body("Link expired.");
+            }
+
+            repository.delete(request);
+
+            return ResponseEntity.ok("Account verified.");
+        } catch (Exception e) {
+            logService.logError("Erro durante a verificação de conta de usuário.", e);
+            return ResponseEntity.status(500).body("Internal server error.");
+        }
+    }
 }

@@ -3,7 +3,7 @@ package com.api.finance_pro.template;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ResetPasswordTemplate {
+public class ResetPasswordTemplate implements EmailTemplate {
 
     private final String userName;
     private final String resetLink;
@@ -15,7 +15,6 @@ public class ResetPasswordTemplate {
                 <!DOCTYPE html>
                 <html lang="pt-BR">
                   <body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; color: #333;">
-                    <h2 style="color: #2c3e50;">🔒 Redefinir senha – FinancePRO</h2>
                     <p>Olá, %s,</p>
                     <p>Recebemos uma solicitação para redefinir sua senha.</p>
                     <p>Clique no botão abaixo para criar uma nova senha:</p>
@@ -27,5 +26,10 @@ public class ResetPasswordTemplate {
                   </body>
                 </html>
                 """.formatted(userName, resetLink, footer);
+    }
+
+    @Override
+    public String getSubject() {
+        return "🔒 Redefinir senha – FinancePRO";
     }
 }

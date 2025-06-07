@@ -9,10 +9,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class RegistrationRequest {
     @Id
     @GeneratedValue(generator = "increment")
@@ -21,13 +21,14 @@ public class RegistrationRequest {
     private String name;
     private String email;
     private String hash;
-    private String token;
+    private String key;
     private LocalDateTime expiresAt;
 
-    public RegistrationRequest(final String name, final String email, final String hash, final String token) {
+    public RegistrationRequest(String name, String email, String hash, String key, LocalDateTime expiresAt) {
         this.name = name;
         this.email = email;
         this.hash = hash;
-        this.token = token;
+        this.key = key;
+        this.expiresAt = expiresAt;
     }
 }
