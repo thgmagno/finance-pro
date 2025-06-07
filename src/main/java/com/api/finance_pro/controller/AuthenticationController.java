@@ -3,7 +3,10 @@ package com.api.finance_pro.controller;
 import com.api.finance_pro.dtos.RegistrationRequestDTO;
 import com.api.finance_pro.model.ApiResponse;
 import com.api.finance_pro.model.RegistrationRequest;
+import com.api.finance_pro.model.User;
+import com.api.finance_pro.model.UserRole;
 import com.api.finance_pro.repository.RegistrationRequestRepository;
+import com.api.finance_pro.repository.UserRepository;
 import com.api.finance_pro.service.LogService;
 import com.api.finance_pro.service.email.EmailService;
 import com.api.finance_pro.service.email.template.VerifyAccountTemplate;
@@ -20,7 +23,10 @@ import java.util.UUID;
 public class AuthenticationController {
 
     @Autowired
-    private RegistrationRequestRepository repository;
+    private RegistrationRequestRepository registrationRequestRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private EmailService emailService;
@@ -48,7 +54,7 @@ public class AuthenticationController {
             final var verifyAccountTemplate = new VerifyAccountTemplate(request.getName(), verifyLink);
             emailService.sendEmail(request.getEmail(), verifyAccountTemplate.getSubject(), verifyAccountTemplate.build());
 
-            repository.save(request);
+            registrationRequestRepository.save(request);
 
             return ResponseEntity.ok(ApiResponse.success("Por favor, confirme seu endereço de e-mail clicando no link que enviamos para sua caixa de entrada.", null));
         } catch (Exception e) {
@@ -60,7 +66,7 @@ public class AuthenticationController {
     @GetMapping("/verify")
     public ResponseEntity<ApiResponse<Void>> verify(@RequestParam String key) {
         try {
-            final var requestOpt = repository.findByKey(key);
+            final var requestOpt = registrationRequestRepository.findByKey(key);
 
             if (requestOpt.isEmpty()) {
                 return ResponseEntity.badRequest().body(ApiResponse.fail("Chave de verificação inválida.", null));
@@ -68,11 +74,15 @@ public class AuthenticationController {
 
             final var request = requestOpt.get();
             if (request.getExpiresAt().isBefore(LocalDateTime.now())) {
-                repository.delete(request);
+                registrationRequestRepository.delete(request);
                 return ResponseEntity.badRequest().body(ApiResponse.fail("Link expirado. Solicite um novo registro.", null));
             }
 
-            repository.delete(request);
+            userRepository.save(new User(request.getName(), request.getEmail(), request.getHash(), UserRole.USER));
+            registrationRequestRepository.delete(request);
+
+            // Gerar token JWT
+
             return ResponseEntity.ok(ApiResponse.success("Conta verificada com sucesso.", null));
         } catch (Exception e) {
             logService.logError("Erro durante a verificação de conta de usuário.", e);

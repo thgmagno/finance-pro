@@ -27,4 +27,7 @@ public class User {
     private String password;
     private UserRole role;
     private LocalDateTime created_at;
+
+    public User(String name, String email, String password, UserRole role) {
+    }
 }

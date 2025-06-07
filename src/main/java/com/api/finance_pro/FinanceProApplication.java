@@ -15,7 +15,8 @@ public class FinanceProApplication {
         System.setProperty("DB_URL", Objects.requireNonNull(dotenv.get("DB_URL")));
         System.setProperty("DB_USER", Objects.requireNonNull(dotenv.get("DB_USER")));
         System.setProperty("DB_PASS", Objects.requireNonNull(dotenv.get("DB_PASS")));
-        System.setProperty("BASE_URL", Objects.requireNonNull(dotenv.get("BASE_URL")));
+        System.setProperty("API_BASE_URL", Objects.requireNonNull(dotenv.get("API_BASE_URL")));
+        System.setProperty("APP_BASE_URL", Objects.requireNonNull(dotenv.get("APP_BASE_URL")));
         System.setProperty("MAILERSEND_USERNAME", Objects.requireNonNull(dotenv.get("MAILERSEND_USERNAME")));
         System.setProperty("MAILERSEND_PASSWORD", Objects.requireNonNull(dotenv.get("MAILERSEND_PASSWORD")));
 
