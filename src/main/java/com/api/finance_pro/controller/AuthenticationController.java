@@ -44,13 +44,13 @@ public class AuthenticationController {
                     LocalDateTime.now().plusMinutes(15)
             );
 
-            final var verifyLink = baseUrl + "/auth/verify?key=" + key;
+            final var verifyLink = baseUrl + "/auth/verify?key=" + request.getKey();
             final var verifyAccountTemplate = new VerifyAccountTemplate(request.getName(), verifyLink);
             emailService.sendEmail(request.getEmail(), verifyAccountTemplate.getSubject(), verifyAccountTemplate.build());
 
             repository.save(request);
 
-            return ResponseEntity.ok(ApiResponse.success("Solicitação de registro enviada com sucesso. Verifique seu e-mail.", null));
+            return ResponseEntity.ok(ApiResponse.success("Por favor, confirme seu endereço de e-mail clicando no link que enviamos para sua caixa de entrada.", null));
         } catch (Exception e) {
             logService.logError("Erro ao registrar usuário.", e);
             return ResponseEntity.status(500).body(ApiResponse.fail("Erro interno ao processar o registro. Tente novamente mais tarde.", null));

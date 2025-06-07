@@ -3,6 +3,7 @@ package com.api.finance_pro.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Table(name = "registration_requests")
 public class RegistrationRequest {
     @Id
     @GeneratedValue(generator = "increment")
