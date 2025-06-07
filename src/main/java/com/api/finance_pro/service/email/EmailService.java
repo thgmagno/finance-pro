@@ -1,4 +1,4 @@
-package com.api.finance_pro.service;
+package com.api.finance_pro.service.email;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;

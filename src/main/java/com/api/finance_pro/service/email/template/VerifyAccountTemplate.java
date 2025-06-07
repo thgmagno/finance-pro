@@ -1,4 +1,4 @@
-package com.api.finance_pro.template;
+package com.api.finance_pro.service.email.template;
 
 import lombok.AllArgsConstructor;
 

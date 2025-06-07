@@ -1,12 +1,12 @@
 package com.api.finance_pro.controller;
 
-import com.api.finance_pro.dto.RegistrationRequestDTO;
+import com.api.finance_pro.dtos.RegistrationRequestDTO;
 import com.api.finance_pro.model.ApiResponse;
 import com.api.finance_pro.model.RegistrationRequest;
 import com.api.finance_pro.repository.RegistrationRequestRepository;
-import com.api.finance_pro.service.EmailService;
 import com.api.finance_pro.service.LogService;
-import com.api.finance_pro.template.VerifyAccountTemplate;
+import com.api.finance_pro.service.email.EmailService;
+import com.api.finance_pro.service.email.template.VerifyAccountTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
