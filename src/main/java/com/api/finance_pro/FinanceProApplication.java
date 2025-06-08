@@ -4,24 +4,42 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Objects;
-
 @SpringBootApplication
 public class FinanceProApplication {
 
     public static void main(String[] args) {
-        final var dotenv = Dotenv.load();
+        try {
+            final var dotenv = Dotenv.configure().ignoreIfMissing().load();
 
-        System.setProperty("DB_URL", Objects.requireNonNull(dotenv.get("DB_URL")));
-        System.setProperty("DB_USER", Objects.requireNonNull(dotenv.get("DB_USER")));
-        System.setProperty("DB_PASS", Objects.requireNonNull(dotenv.get("DB_PASS")));
-        System.setProperty("JWT_SECRET", Objects.requireNonNull(dotenv.get("JWT_SECRET")));
-        System.setProperty("API_BASE_URL", Objects.requireNonNull(dotenv.get("API_BASE_URL")));
-        System.setProperty("APP_BASE_URL", Objects.requireNonNull(dotenv.get("APP_BASE_URL")));
-        System.setProperty("MAILERSEND_USERNAME", Objects.requireNonNull(dotenv.get("MAILERSEND_USERNAME")));
-        System.setProperty("MAILERSEND_PASSWORD", Objects.requireNonNull(dotenv.get("MAILERSEND_PASSWORD")));
+            setPropertyIfPresent("DB_URL", dotenv);
+            setPropertyIfPresent("DB_USER", dotenv);
+            setPropertyIfPresent("DB_PASS", dotenv);
+            setPropertyIfPresent("JWT_SECRET", dotenv);
+            setPropertyIfPresent("API_BASE_URL", dotenv);
+            setPropertyIfPresent("APP_BASE_URL", dotenv);
+            setPropertyIfPresent("MAILERSEND_USERNAME", dotenv);
+            setPropertyIfPresent("MAILERSEND_PASSWORD", dotenv);
+        } catch (Exception e) {
+            System.out.println("Iniciando aplicação sem carregar as variáveis de ambiente do .env");
+        }
 
         SpringApplication.run(FinanceProApplication.class, args);
     }
+
+    private static void setPropertyIfPresent(String key, Dotenv dotenv) {
+        String value = null;
+        if (dotenv != null) {
+            value = dotenv.get(key);
+        }
+        if (value == null) {
+            value = System.getenv(key);
+        }
+        if (value != null) {
+            System.setProperty(key, value);
+        } else {
+            System.out.printf("Variável de ambiente %s não encontrada%n", key);
+        }
+    }
+
 
 }
