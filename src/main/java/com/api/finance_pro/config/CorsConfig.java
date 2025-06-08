@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(@NotNull org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("http://localhost:3000", "app-finance-pro-production.up.railway.app")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowCredentials(true)
                         .allowedHeaders("*");
