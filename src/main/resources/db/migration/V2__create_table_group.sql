@@ -1,0 +1,7 @@
+CREATE TABLE groups (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    owner_id INTEGER NOT NULL,
+    participants INTEGER[],
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
