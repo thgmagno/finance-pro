@@ -35,14 +35,14 @@ public class LogService {
     }
 
     private void log(LogLevel level, String message, String origin, String stackTrace) {
-        String sql = "INSERT INTO logs (timestamp, level, message, origin) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO logs (timestamp, level, message, origin, stack_trace) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setTimestamp(1, Timestamp.from(Instant.now()));
             ps.setInt(2, level.getCode());
             ps.setString(3, message);
-            ps.setString(4, origin);
+            ps.setString(4, origin != null ? origin.substring(0, Math.min(origin.length(), 100)) : null);
             ps.setString(5, stackTrace);
 
             ps.executeUpdate();

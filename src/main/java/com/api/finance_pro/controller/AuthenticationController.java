@@ -74,7 +74,7 @@ public class AuthenticationController {
             final var exp = LocalDateTime.now().plusMinutes(15);
             final var request = new RegistrationRequest(data.name(), data.email(), hash, key, exp);
 
-            final var verifyLink = appBaseUrl + "/auth/verify?key=" + request.getKey();
+            final var verifyLink = appBaseUrl + "/api/auth/verify?key=" + request.getKey();
             final var verifyAccountTemplate = new VerifyAccountTemplate(request.getName(), verifyLink);
             emailService.sendEmail(request.getEmail(), verifyAccountTemplate.getSubject(), verifyAccountTemplate.build());
 
