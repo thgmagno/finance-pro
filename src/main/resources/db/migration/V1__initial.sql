@@ -10,10 +10,10 @@ CREATE TABLE registration_requests (
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    email TEXT,
+    email TEXT UNIQUE,
     password TEXT,
     role SMALLINT,
-    created_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 CREATE TABLE logs (
